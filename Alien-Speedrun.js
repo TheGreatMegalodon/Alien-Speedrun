@@ -69,7 +69,7 @@ this.options = {
 
 var time = 25;
 var stage = 0;
-var startingGame = "ended";
+var startingGame = false;
 var instrutor_ended = false;
 var nextAlien_Code = 10;
 var nextAlien_Level = 0;
