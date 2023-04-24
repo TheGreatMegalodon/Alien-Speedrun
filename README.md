@@ -1,10 +1,10 @@
 # Alien-Speedrun
 
-## Goal
+### Goal
 * Kill every aliens form the chicken to the final boss without dying
 
-## Mod developer
+### Mod developer
 * Megalodon
 
-## Mod Version
+### Mod Version
 * (1.0.1)[https://github.com/TheGreatMegalodon/Alien-Speedrun/blob/main/Alien-Speedrun.js]
