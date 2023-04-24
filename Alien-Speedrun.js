@@ -199,7 +199,7 @@ this.event = function(event, game) {
         const alien = aliensInfo[nextAlien_Code];
         alert(event.killer, `Well Done!`, `Next alien:  ${alien.name}, difficulty:  ${alien.difficulty[nextAlien_Level]}`);
         const collectible = (nextAlien_Code == 20 || nextAlien_Code == 19 || nextAlien_Code == 15 || nextAlien_Code == 12) ? 12 : collectibles[~~(Math.random() * collectibles.length)];
-        const crystals = (nextAlien_Code == 20 || nextAlien_Code == 19 || nextAlien_Code == 15 || nextAlien_Code == 12) ? setVariables({order: stage+5, len: 10, gap: 1})[~~(Math.random() * setVariables({order: stage+5, len: 10, gap: 1}).length)] : setVariables({order: stage+2, len: 10, gap: 1})[~~(Math.random() * setVariables({order: stage+2, len: 10, gap: 1}).length)];
+        const crystals = (nextAlien_Code == 20 || nextAlien_Code == 19 || nextAlien_Code == 15 || nextAlien_Code == 12) ? setVariables({order: stage+10, len: 10, gap: 2})[~~(Math.random() * setVariables({order: stage+10, len: 10, gap: 2}).length)] : setVariables({order: stage+2, len: 10, gap: 1})[~~(Math.random() * setVariables({order: stage+2, len: 10, gap: 1}).length)];
         setTimeout(() => {
           game.addAlien({
             code: nextAlien_Code, 
