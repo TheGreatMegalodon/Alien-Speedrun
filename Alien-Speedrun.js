@@ -151,6 +151,8 @@ function prepareScoreboard(game) {
       {type: "text", position: [14, 4, 100, 8], value: format_time(time), color: "rgb(255,255,255)", align: "left"},
       {type: "text", position: [58, 4, 100, 8], value: `Stage:  ${stage}`, color: "rgb(255,255,255)", align: "left"},
       {type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)"},
+      {type: "text", position: [0, 45, 100, 10], value: `Initializing`, color: "rgb(255,255,255)", align: "center"},
+      {type: "text", position: [0, 57, 100, 10], value: `Data`, color: "rgb(255,255,255)", align: "center"}
     ]
   };
   for (let ship of game.ships) ship.setUIComponent(Scoreboard);
@@ -223,6 +225,13 @@ this.event = function(event, game) {
               else game.aliens[0].set({damage: 250, rate: 6});
             }
           }, 200);
+          if (nextAlien_Code == 12 && nextAlien_Level === 0) {
+            for (let ship of game.ships) {
+              ship_instructor(ship, "\n\n\n\n\n\n", "Zoltar", 4);
+              ship_instructor(ship, "Haha!", "Zoltar", 5);
+              ship_instructor(ship, "Try Minning up before attacking that one!", "Zoltar", 9, 5, false);
+            } 
+          }
         }, 4000);
       }
       break;
@@ -263,7 +272,7 @@ function alert(ship, Value1 = "", Value2 = "", Color = "rgba(255, 255, 255, 0.8)
   });
 }
 
-var ship_instructor = function(ship, message, character = "Lucina", delay = 0, hide_after = 0) {
+var ship_instructor = function(ship, message, character = "Lucina", delay = 0, hide_after = 0, allow = true) {
   if (!ship || !message || !message.length) {return}
   let instructor_func;
   if (hide_after) {
@@ -272,12 +281,14 @@ var ship_instructor = function(ship, message, character = "Lucina", delay = 0, h
       ship.instructorSays(message, character);
       setTimeout(() => { 
         ship.hideInstructor();
-        if (!instrutor_ended) {
-          instrutor_ended = true;
-          addObject("MapCenter", MapCenter, {x: 20 * 5, y: 20 * 5, sx: 60, sy: 60, rz: 0});
-        } else {
-          time = 10;
-          startingGame = "ended";
+        if (allow) {
+          if (!instrutor_ended) {
+            instrutor_ended = true;
+            addObject("MapCenter", MapCenter, {x: 20 * 5, y: 20 * 5, sx: 60, sy: 60, rz: 0});
+          } else {
+            time = 10;
+            startingGame = "ended";
+          }
         }
       }, hide_after * 650);
     };
@@ -296,15 +307,15 @@ function prepareShip(ship, timed = 0) {
   ship.set({x: 0, y: 0});
   ship_instructor(ship, "Welcome to..\n", "Zoltar");
   ship_instructor(ship, "Alien Speedrun!\n", "Zoltar", timed += 3);
-  ship_instructor(ship, "To win you must kill every aliens without dying", "Zoltar", timed += 3);
-  ship_instructor(ship, "Good luck Commander", "Zoltar", timed += 6);
-  ship_instructor(ship, "See you at the end!", "Zoltar", timed += 5, 4);
+  ship_instructor(ship, "To win the game\nYou must kill every alien as fast as possible without dying even once..", "Zoltar", timed += 3);
+  ship_instructor(ship, "Good luck Commander!", "Zoltar", timed += 8, 4);
 }
 
 function gameFinished(ship, timed = 0) {
   startingGame = false;
   ship.set({x: 0, y: 0, type: 191, collider: false, idle: true});
-  ship_instructor(ship, `Well done! Commander`, "Zoltar");
+  ship_instructor(ship, "\n\n\n\n\n\n", "Zoltar", 1);
+  ship_instructor(ship, `Well done! Commander`, "Zoltar", timed += 2);
   ship_instructor(ship, `You successfuly killed all of the aliens.`, "Zoltar", timed += 5);
   ship_instructor(ship, `It took you ${format_time(time)} minutes to finish the game!`, "Zoltar", timed += 6);
   ship_instructor(ship, `you did a great performance.`, "Zoltar", timed += 7);
