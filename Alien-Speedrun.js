@@ -100,7 +100,7 @@ this.tick = function(game) {
             weapon_drop: collectibles[~~(Math.random() * collectibles.length)]
           });
           const alienn = aliensInfo[nextAlien_Code];
-          for (let ship of game.ships) alert(ship, `Well Done!`, `Next alien:  ${alienn.name}, difficulty:  ${alienn.difficulty[nextAlien_Level]}`);
+          for (let ship of game.ships) alert(ship, `First Alien!`, `Alien:  ${alienn.name}, difficulty:  ${alienn.difficulty[nextAlien_Level]}`);
         }
         break;
       case 1:
