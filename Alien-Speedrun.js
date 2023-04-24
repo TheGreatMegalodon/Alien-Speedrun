@@ -1,3 +1,7 @@
+// Alien-Speedrun
+// by: Megalodon
+// version: 1.0.0
+
 var map =
 "                    \n"+
 "                    \n"+
@@ -36,11 +40,11 @@ const aliensInfo = {
   13: { name: "Caterpillar", difficulty: { 0: "Easy", 1:  "Easy", 2:  "Easy", 3: "Extremly Hard" } }, // troll
   14: { name: "Candlestick", difficulty: { 0: "Easy", 1: "Easy", 2: "Easy", 3: "Easy" } },
   15: { name: "Hirsute", difficulty: { 0: "Medium", 1:  "Hard", 2:  "Hard", 3:  "Hard" } },
-  16: { name: "Piranha", difficulty: { 0: "Easy", 1: "Easy", 2: "Medium", 3: "Hard" } },
+  16: { name: "Piranha", difficulty: { 0: "Easy", 1: "Easy", 2: "Easy", 3: "Hard" } },
   17: { name: "Pointu", difficulty: { 0: "Easy", 1: "Easy", 2: "Easy", 3: "Easy" } },
-  18: { name: "Fork", difficulty: { 0: "Easy", 1: "Easy", 2: "Medium", 3: "Medium" } },
+  18: { name: "Fork", difficulty: { 0: "Easy", 1: "Easy", 2: "Easy", 3: "Easy" } },
   19: { name: "Saucer", difficulty: { 0: "Medium", 1: "Medium", 2:  "Hard", 3:  "Hard" } },
-  20: { name: "Final Boss", difficulty: { 0: "Hard", 1: "Final Boss", 2: "Final Boss", 3: "Final Boss" } },
+  20: { name: "Final Boss", difficulty: { 0: "Hard", 1: "Hard", 2: "Hard", 3: "Hard" } },
 };
 
 var music = ["civilisation.mp3", "procedurality.mp3", "argon.mp3", "crystals.mp3", "red_mist.mp3", "warp_drive.mp3"];
@@ -147,7 +151,7 @@ function prepareScoreboard(game) {
 function updateScoreboard(game) {
   const alienLB = aliensInfo[nextAlien_Code];
   const colorStage = (stage > 0) ? (stage < 3) ? "rgb(255,155,55)" : "rgb(255,55,55)" : "rgb(255,255,255)";
-  const colorInformations = (alienLB.difficulty[nextAlien_Level] == "Easy") ? "rgb(55,255,55)" : (alienLB.difficulty[nextAlien_Level] == "Medium") ? "rgb(255,155,55)" : "rgb(255,55,55)";
+  const colorInformations = (alienLB.difficulty[nextAlien_Level] == "Easy") ? "rgb(55,255,55)" : (alienLB.difficulty[nextAlien_Level] == "Medium") ? "rgb(255,155,55)" : (alienLB.difficulty[nextAlien_Level] == "Medium") ? "rgb(151,0,0)" : "rgb(255,55,55)";
   const colorAlien = (alienLB.name == "Caterpillar" || alienLB.name == "Final Boss") ? "rgb(155,55,255)" : "rgb(255,255,255)";
   const down = 10;
   let Scoreboard = {
