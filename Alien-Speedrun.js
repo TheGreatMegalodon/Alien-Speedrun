@@ -1,5 +1,5 @@
 const mod_version =
-"1.0.4";
+"1.0.5";
 
 /*
 Mod creator: Megaldoon
@@ -72,7 +72,7 @@ this.options = {
   ships: ship
 };
 
-var time = 35;
+var time = 32;
 var stage = 0;
 var startingGame = false;
 var instrutor_ended = false;
@@ -80,10 +80,13 @@ var endGameTimer;
 var nextAlien_Code = 10;
 var nextAlien_Level = 0;
 var collectibles = [10, 11, 20, 21, 41, 42, 90, 91];
+var asteroid_positions = getCords(100,  {cords: 100}, false);
+var asteroid_sizes = setVariables({order: 3, len: 10, gap: 2});
+var asteroid_velocity = getCords(6,  {cords: 0}, false).map(pos => pos/12.5).filter(pos => pos !== 0);
 this.tick = function(game) {
   if (game.step % 30 === 0) {
-    if (game.ships.length > 1) { startingGame = false, blocked();
-      for (let ship of game.ships) alert(ship, `Too much players detected`, `Please restart the mod in order to continue playing`, blink("rgb(255,55,55)"), 8000);
+    if (game.ships.length > 1) { startingGame = false, colorBLK = blink("rgb(100,100,255)"), blocked();
+      for (let ship of game.ships) alert(ship, `More than 2 players detected`, `Please restart the mod in order to continue playing`, colorBLK, 8000);
     }
   }
   if (game.step % 60 === 0) {
@@ -110,6 +113,15 @@ this.tick = function(game) {
         break;
       case 1:
         updateScoreboard(game);
+        if (game.step % 240 === 0 && game.asteroids.length <= 4) {
+          game.addAsteroid({
+            size: asteroid_sizes[~~(Math.random()*asteroid_sizes.length)],
+            x: asteroid_positions[~~(Math.random()*asteroid_positions.length)],
+            y: asteroid_positions[~~(Math.random()*asteroid_positions.length)],
+            vx: asteroid_velocity[~~(Math.random()*asteroid_velocity.length)],
+            vy: asteroid_velocity[~~(Math.random()*asteroid_velocity.length)]
+          });
+        }
         break;
       case 2:
         if (time >= 0) {
@@ -139,16 +151,16 @@ function blink(passiveColor) {
   return blinkColor;
 }
 
-function blocked(ship) {
+function blocked() {
   let Scoreboard = {
     id: "scoreboard",
     clickable: false,
     visible: true,
     components: [
-      {type: "text", position: [0, 4, 100, 8], value: `Too much players`, color: "rgb(255,255,255)", align: "center"},
+      {type: "text", position: [0, 4, 100, 8], value: `Too many players`, color: "rgb(100,100,255)", align: "center"},
       {type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)"},
-      {type: "text", position: [0, 45, 100, 8], value: `Communications`, color: "rgb(255,255,255)", align: "center"},
-      {type: "text", position: [0, 57, 100, 8], value: `Scrambled`, color: "rgb(255,255,255)", align: "center"}
+      {type: "text", position: [0, 45, 100, 8], value: `C0.mmun1..c@t1o.ns..`, color: "rgb(255,255,255)", align: "center"},
+      {type: "text", position: [0, 57, 100, 8], value: `S..cr@..m8l.ed.`, color: "rgb(255,255,255)", align: "center"}
     ]
   };
   for (let ship of game.ships) ship.setUIComponent(Scoreboard);
@@ -284,6 +296,20 @@ this.event = function(event, game) {
         }, 4000);
       }
       break;
+    case "asteroid_destroyed":
+      if (event.killer) {
+        const point = event.asteroid.size > 30 ? setVariables({order: 3, len: 1, gap: 2}) : setVariables({order: 1, len: 1, gap: 2});
+        event.killer.set({score: event.killer.score + point[0]});
+        if (event.asteroid.size > 40) {
+          const collectible = collectibles[~~(Math.random() * collectibles.length)];
+          game.addCollectible({
+            code: collectible,
+            x: event.asteroid.x,
+            y: event.asteroid.y
+          });
+        }
+      }
+      break;
     case "ship_destroyed":
       event.ship.custom.lastlyDied = true;
       startingGame = false;
@@ -375,13 +401,19 @@ function format_time(time) {
 
 function setVariables(info, list=[], i=0) {
   if (info.len > 10) return undefined;
-  if (!info.gap) info.gap = 1;
+  info.gap = info.gap || 1;
   while (i<info.len) {
     const addNum = Math.round(Math.random()*(info.gap*10))+(info.order*10);
     if (!list.includes(addNum)) list.push(addNum), i++;
   }
   return list;
 } 
+
+function getCords(size, info, random=true) {
+  const mapSize = size+1;
+  var newInfo = Array(mapSize).fill(0).map((_, i) => (info.cords - Math.round(size / 2)) + i);
+  return random ? newInfo[~~(Math.random() * newInfo.length)] : newInfo;
+}
 
 function MapOpen() {
   game.modding.terminal.echo(`[[bg;#ffdf00;]\n - Alien SpeedRun - ]\n[[ig;#00fff2;]\nVersion: ${mod_version}\nAll credits goes to Megalodon#0001\n]`);
