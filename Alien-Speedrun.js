@@ -75,7 +75,7 @@ this.options = {
 
 var time = 25;
 var stage = 0;
-var startingGame = 2;
+var startingGame = false;
 var instrutor_ended = false;
 var endGameTimer;
 var nextAlien_Code = 10;
