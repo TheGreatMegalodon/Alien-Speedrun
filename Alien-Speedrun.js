@@ -1,5 +1,5 @@
 const mod_version =
-"1.0.3";
+"1.0.4";
 
 /*
 Mod creator: Megaldoon
@@ -53,7 +53,7 @@ const aliensInfo = {
 
 const ship = [Spectator_191 = '{"name":"Spectator","level":1.9,"model":1,"size":0.025,"zoom":0.075,"specs":{"shield":{"capacity":[1e-30,1e-30],"reload":[1000,1000]},"generator":{"capacity":[1e-30,1e-30],"reload":[1,1]},"ship":{"mass":1,"speed":[200,200],"rotation":[1000,1000],"acceleration":[1000,1000]}},"bodies":{"face":{"section_segments":100,"angle":0,"offset":{"x":0,"y":0,"z":0},"position":{"x":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"y":[-2,-2,2,2],"z":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"width":[0,1,1,0],"height":[0,1,1,0],"vertical":true,"texture":[6]}},"typespec":{"name":"Spectator","level":1,"model":1,"code":101,"specs":{"shield":{"capacity":[1e-30,1e-30],"reload":[1000,1000]},"generator":{"capacity":[1e-30,1e-30],"reload":[1,1]},"ship":{"mass":1,"speed":[200,200],"rotation":[1000,1000],"acceleration":[1000,1000]}},"shape":[0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001],"lasers":[],"radius":0.001}}'];
 
-var music = [ /* "civilisation.mp3", "procedurality.mp3", "argon.mp3", */ "crystals.mp3" /* , "red_mist.mp3", "warp_drive.mp3" */ ];
+var music = ["civilisation.mp3", "procedurality.mp3", "argon.mp3", "crystals.mp3", "red_mist.mp3", "warp_drive.mp3"];
 var musicApplyed = music[~~(Math.random() * music.length)];
 if (!game.custom.launched) MapOpen();
 this.options = {
@@ -64,7 +64,6 @@ this.options = {
   crystal_value: 2.5,
   starting_ship: 801,
   starting_ship_maxed: true,
-  weapon_drop: 10,
   weapons_store: false,
   choose_ship: [301, 302, 303, 304],
   custom_map: map,
@@ -73,7 +72,7 @@ this.options = {
   ships: ship
 };
 
-var time = 25;
+var time = 35;
 var stage = 0;
 var startingGame = false;
 var instrutor_ended = false;
@@ -82,6 +81,11 @@ var nextAlien_Code = 10;
 var nextAlien_Level = 0;
 var collectibles = [10, 11, 20, 21, 41, 42, 90, 91];
 this.tick = function(game) {
+  if (game.step % 30 === 0) {
+    if (game.ships.length > 1) { startingGame = false, blocked();
+      for (let ship of game.ships) alert(ship, `Too much players detected`, `Please restart the mod in order to continue playing`, blink("rgb(255,55,55)"), 8000);
+    }
+  }
   if (game.step % 60 === 0) {
     switch(startingGame) {
       case true:
@@ -115,11 +119,11 @@ this.tick = function(game) {
         } else {
           for (let ship of game.ships) {
             ship.gameover({
-              "You Won" : ship.name,
+              "You WON!" : ship.name.toString(),
               "-" : "-",
-              "Time Survived" : format_time(endGameTimer),
-              "Aliens Killed" : ship.custom.kills,
-              "Score" : ship.score
+              "Time Survived" : format_time(endGameTimer-1),
+              "Aliens Killed" : ship.custom.kills.toString(),
+              "Score" : ship.score.toString()
             });
           }
         }
@@ -127,6 +131,28 @@ this.tick = function(game) {
     }
   }
 };
+
+var blinkColor;
+function blink(passiveColor) {
+  if (blinkColor == passiveColor) blinkColor = "rgb(55,55,55)";
+  else blinkColor = passiveColor;
+  return blinkColor;
+}
+
+function blocked(ship) {
+  let Scoreboard = {
+    id: "scoreboard",
+    clickable: false,
+    visible: true,
+    components: [
+      {type: "text", position: [0, 4, 100, 8], value: `Too much players`, color: "rgb(255,255,255)", align: "center"},
+      {type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)"},
+      {type: "text", position: [0, 45, 100, 8], value: `Communications`, color: "rgb(255,255,255)", align: "center"},
+      {type: "text", position: [0, 57, 100, 8], value: `Scrambled`, color: "rgb(255,255,255)", align: "center"}
+    ]
+  };
+  for (let ship of game.ships) ship.setUIComponent(Scoreboard);
+}
 
 function endScoreboard(game) {
   let Scoreboard = {
@@ -192,6 +218,7 @@ function updateScoreboard(game) {
   for (let ship of game.ships) ship.setUIComponent(Scoreboard);
 }
 
+function isBoss(Code, Level) {return (Code == 20 || Code == 19 || Code == 15 || Code == 12 || (Code == 16 && Level == 3))}
 this.event = function(event, game) {
   switch(event.name) {
     case "alien_destroyed":
@@ -211,8 +238,8 @@ this.event = function(event, game) {
         }
         const alien = aliensInfo[nextAlien_Code];
         alert(event.killer, `Well Done!`, `Next alien:  ${alien.name}, difficulty:  ${alien.difficulty[nextAlien_Level]}`);
-        const collectible = (nextAlien_Code == 20 || nextAlien_Code == 19 || nextAlien_Code == 15 || nextAlien_Code == 12) ? 12 : collectibles[~~(Math.random() * collectibles.length)];
-        const crystals = (nextAlien_Code == 20 || nextAlien_Code == 19 || nextAlien_Code == 15 || nextAlien_Code == 12) ? setVariables({order: (Math.pow(stage+1, 2))+10, len: 10, gap: 2})[~~(Math.random() * setVariables({order: (Math.pow(stage+1, 2))+10, len: 10, gap: 2}).length)] : setVariables({order: stage+4, len: 10, gap: 2})[~~(Math.random() * setVariables({order: stage+4, len: 10, gap: 2}).length)];
+        const collectible = isBoss(nextAlien_Code, nextAlien_Level) ? 12 : collectibles[~~(Math.random() * collectibles.length)];
+        const crystals = isBoss(nextAlien_Code, nextAlien_Level) ? setVariables({order: (Math.pow(stage+1, 3))+10, len: 10, gap: 2})[~~(Math.random() * setVariables({order: (Math.pow(stage+1, 3))+10, len: 10, gap: 2}).length)] : setVariables({order: stage+4, len: 10, gap: 2})[~~(Math.random() * setVariables({order: stage+4, len: 10, gap: 2}).length)];
         setTimeout(() => {
           game.addAlien({
             code: nextAlien_Code, 
@@ -243,12 +270,16 @@ this.event = function(event, game) {
       else { alert(event.ship, `You failed!`, `Be better next time!`, "rgba(255, 55, 55, 0.8)");
       event.ship.set({x: 0, y: 0, vx: 0, vy: 0, collider: false, type: 191, idle: true});
         setTimeout(() => {
+          const alien = aliensInfo[nextAlien_Code];
           event.ship.gameover({
-            "You Lost" : event.ship.name,
+            "You LOST!" : event.ship.name.toString(),
             "-" : "-",
-            "Time Survived" : format_time(time),
-            "Aliens Killed" : event.ship.custom.kills,
-            "Score" : event.ship.score
+            "Killer" : alien.name.toString(),
+            "Difficulty" : alien.difficulty[nextAlien_Level].toString(),
+            "Stage" : stage.toString(),
+            "Time Survived" : format_time(time-1).toString(),
+            "Aliens Killed" : event.ship.custom.kills.toString(),
+            "Score" : event.ship.score.toString()
           });
         }, 4000);
       }
@@ -307,8 +338,10 @@ function prepareShip(ship, timed = 0) {
   ship.set({x: 0, y: 0});
   ship_instructor(ship, "Welcome to..\n", "Zoltar");
   ship_instructor(ship, "Alien Speedrun!\n", "Zoltar", timed += 3);
-  ship_instructor(ship, "To win the game\nYou must kill every alien as fast as possible without dying even once..", "Zoltar", timed += 3);
-  ship_instructor(ship, "Good luck Commander!", "Zoltar", timed += 8, 4);
+  ship_instructor(ship, "To win the game, you must kill all the aliens as quickly as possible without dying once..", "Zoltar", timed += 3);
+  ship_instructor(ship, "There are 4 steps, from 0 to 3, each one more difficult than the other", "Zoltar", timed += 8);
+  ship_instructor(ship, "Complete them as quickly as possible and maybe become the record holder!", "Zoltar", timed += 7);
+  ship_instructor(ship, "Good luck Commander!", "Zoltar", timed += 7, 4);
 }
 
 function gameFinished(ship, timed = 0) {
