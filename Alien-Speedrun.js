@@ -1,5 +1,5 @@
 const mod_version =
-"1.0.2";
+"1.0.3";
 
 /*
 Mod creator: Megaldoon
@@ -53,7 +53,7 @@ const aliensInfo = {
 
 const ship = [Spectator_191 = '{"name":"Spectator","level":1.9,"model":1,"size":0.025,"zoom":0.075,"specs":{"shield":{"capacity":[1e-30,1e-30],"reload":[1000,1000]},"generator":{"capacity":[1e-30,1e-30],"reload":[1,1]},"ship":{"mass":1,"speed":[200,200],"rotation":[1000,1000],"acceleration":[1000,1000]}},"bodies":{"face":{"section_segments":100,"angle":0,"offset":{"x":0,"y":0,"z":0},"position":{"x":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"y":[-2,-2,2,2],"z":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"width":[0,1,1,0],"height":[0,1,1,0],"vertical":true,"texture":[6]}},"typespec":{"name":"Spectator","level":1,"model":1,"code":101,"specs":{"shield":{"capacity":[1e-30,1e-30],"reload":[1000,1000]},"generator":{"capacity":[1e-30,1e-30],"reload":[1,1]},"ship":{"mass":1,"speed":[200,200],"rotation":[1000,1000],"acceleration":[1000,1000]}},"shape":[0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001],"lasers":[],"radius":0.001}}'];
 
-var music = ["civilisation.mp3", "procedurality.mp3", "argon.mp3", "crystals.mp3", "red_mist.mp3", "warp_drive.mp3"];
+var music = [ /* "civilisation.mp3", "procedurality.mp3", "argon.mp3", */ "crystals.mp3" /* , "red_mist.mp3", "warp_drive.mp3" */ ];
 var musicApplyed = music[~~(Math.random() * music.length)];
 if (!game.custom.launched) MapOpen();
 this.options = {
@@ -75,8 +75,9 @@ this.options = {
 
 var time = 25;
 var stage = 0;
-var startingGame = false;
+var startingGame = 2;
 var instrutor_ended = false;
+var endGameTimer;
 var nextAlien_Code = 10;
 var nextAlien_Level = 0;
 var collectibles = [10, 11, 20, 21, 41, 42, 90, 91];
@@ -106,19 +107,20 @@ this.tick = function(game) {
       case 1:
         updateScoreboard(game);
         break;
-      case "ended":
+      case 2:
         if (time >= 0) {
+          time--;
           endScoreboard(game);
+          if (!instrutor_ended) for (let ship of game.ships) alert(ship, `Ending...!`, format_time(time+1), "rgba(255,255,255, 0.8)", 1500);
         } else {
           for (let ship of game.ships) {
             ship.gameover({
               "You Won" : ship.name,
               "-" : "-",
-              "Time Survived" : format_time(time),
+              "Time Survived" : format_time(endGameTimer),
               "Aliens Killed" : ship.custom.kills,
               "Score" : ship.score
             });
-            ship.set({idle: true});
           }
         }
         break;
@@ -133,17 +135,18 @@ function endScoreboard(game) {
     visible: true,
     components: [
       {type: "text", position: [14, 4, 100, 8], value: `Game is ending`, color: "rgb(255,255,255)", align: "left"},
-      {type: "text", position: [72, 4, 100, 8], value: format_time(time--), color: colorStage, align: "left"},
+      {type: "text", position: [72, 4, 100, 8], value: format_time(time), color: "rgb(255,255,255)", align: "left"},
       {type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)"},
-      {type: "text", position: [0, 45, 100, 10], value: `Communications`, color: "rgb(255,255,255)", align: "center"},
-      {type: "text", position: [0, 57, 100, 10], value: `Over`, color: "rgb(255,255,255)", align: "center"}
+      {type: "text", position: [0, 45, 100, 8], value: `Communications`, color: "rgb(255,255,255)", align: "center"},
+      {type: "text", position: [0, 57, 100, 8], value: `Over`, color: "rgb(255,255,255)", align: "center"}
     ]
   };
   for (let ship of game.ships) ship.setUIComponent(Scoreboard);
 }
 
+let dataInitIndex = 0;
+const dataInitValues = ["Initializing Data!", "Initializing Data.!", "Initializing Data..!", "Initializing Data...!"];
 function prepareScoreboard(game) {
-  value = Initialize(value);
   let Scoreboard = {
     id: "scoreboard",
     clickable: false,
@@ -152,18 +155,10 @@ function prepareScoreboard(game) {
       {type: "text", position: [14, 4, 100, 8], value: format_time(time), color: "rgb(255,255,255)", align: "left"},
       {type: "text", position: [58, 4, 100, 8], value: `Stage:  ${stage}`, color: "rgb(255,255,255)", align: "left"},
       {type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)"},
-      {type: "text", position: [0, 52.5, 100, 8], value: value, color: "rgb(255,255,255)", align: "center"},
+      {type: "text", position: [0, 52.5, 100, 8], value: dataInitValues[(dataInitIndex++) % dataInitValues.length], color: "rgb(255,255,255)", align: "center"},
     ]
   };
   for (let ship of game.ships) ship.setUIComponent(Scoreboard);
-}
-
-function Initialize(oldValue) {
-  const values = ["Initializing Data!", "Initializing Data.!", "Initializing Data..!", "Initializing Data...!"];
-  const currentValue = oldValue;
-  const currentIndex = values.indexOf(currentValue);
-  const nextIndex = (currentIndex + 1) % values.length;
-  return values[nextIndex];
 }
 
 function updateScoreboard(game) {
@@ -246,7 +241,7 @@ this.event = function(event, game) {
     case "ship_spawned":
       if (!event.ship.custom.lastlyDied) prepareShip(event.ship);
       else { alert(event.ship, `You failed!`, `Be better next time!`, "rgba(255, 55, 55, 0.8)");
-      event.ship.set({x: 0, y: 0, collider: false, type: 191, idle: true});
+      event.ship.set({x: 0, y: 0, vx: 0, vy: 0, collider: false, type: 191, idle: true});
         setTimeout(() => {
           event.ship.gameover({
             "You Lost" : event.ship.name,
@@ -292,11 +287,8 @@ var ship_instructor = function(ship, message, character = "Lucina", delay = 0, h
         if (allow) {
           if (!instrutor_ended) {
             instrutor_ended = true;
-            addObject("MapCenter", MapCenter, {x: 20 * 5, y: 20 * 5, z: -15, sx: 60, sy: 60, rz: 0});
-          } else {
-            time = 10;
-            startingGame = "ended";
-          }
+            addObject("MapCenter", Objects.MapCenter, {x: 20 * 5, y: 20 * 5, z: -15, sx: 60, sy: 60, rz: 0});
+          } else instrutor_ended = false;
         }
       }, hide_after * 650);
     };
@@ -321,14 +313,17 @@ function prepareShip(ship, timed = 0) {
 
 function gameFinished(ship, timed = 0) {
   startingGame = false;
-  ship.set({x: 0, y: 0, type: 191, collider: false, idle: true});
+  endGameTimer = time;
+  ship.set({x: 0, y: 0, vx: 0, vy: 0, collider: false, type: 191, idle: true});
   ship_instructor(ship, "\n\n\n\n\n\n", "Zoltar", 1);
   ship_instructor(ship, `Well done! Commander`, "Zoltar", timed += 2);
   ship_instructor(ship, `You successfuly killed all of the aliens.`, "Zoltar", timed += 5);
-  ship_instructor(ship, `It took you ${format_time(time)} minutes to finish the game!`, "Zoltar", timed += 6);
+  ship_instructor(ship, `It took you ${format_time(endGameTimer-1)} minutes to finish the game!`, "Zoltar", timed += 6);
   ship_instructor(ship, `you did a great performance.`, "Zoltar", timed += 7);
   ship_instructor(ship, `i wish you the best, and see you next time.`, "Zoltar", timed += 5);
-  ship_instructor(ship, `\n\n\n\ncommunications over.`, "Zoltar", timed += 6, 4);
+  ship_instructor(ship, `\n\n\n\n\n\ncommunications\nover.`, "Zoltar", timed += 6, 4);
+  time = 30;
+  startingGame = 2;
 }
 
 function format_time(time) {
@@ -360,33 +355,21 @@ function MapOpen() {
   game.custom.launched = true;
 }
 
-const MapCenter = {
-  id: "MapCenter",
-  obj: "https://starblast.data.neuronality.com/mods/objects/plane.obj",
-  emissive: "https://raw.githubusercontent.com/TheGreatMegalodon/Dueling-Component/main/Dueling_Component/Aliens_SpeedRun_blur.png",
-};
-
-const lost_sector_aries = {
-  id: "lost_sector_aries",
-  obj: "https://starblast.io/lost_sector/LostSector_Aries_HardEdges.obj",
-  diffuse: "https://starblast.io/lost_sector/LostSector_Aries_LostSector_Aries_Diffuse.jpg",
-  bump: "https://starblast.io/lost_sector/LostSector_Aries_LostSector_Aries_Height.jpg",
-  specular: "https://starblast.io/lost_sector/LostSector_Aries_LostSector_Aries_Specular.jpg",
-  shininess: 10,
-  emissiveColor: 0,
-  specularColor: 0xFFFFFF,
-  transparent: false
-};
-
-game.setObject({
-  id: "lost_sector_aries",
-  type: lost_sector_aries,
-  position: {x:20 * 5, y: 20 * 5, z:-60},
-  scale: {x:3, y:3, z:3},
-  rotation: {x:0, y:0, z:Math.PI}
-});
-
-addObject("lost_sector_aries", lost_sector_aries, {x: 20 * 5, y: 20 * 5, z: -60, sx: 2, sy: 2, sz: 3, rx: 0});
+const Objects = {
+  MapCenter: {
+    id: "MapCenter",
+    obj: "https://starblast.data.neuronality.com/mods/objects/plane.obj",
+    emissive: "https://raw.githubusercontent.com/TheGreatMegalodon/Dueling-Component/main/Dueling_Component/Aliens_SpeedRun_blur.png",
+  },
+  lost_sector_aries: {
+    id: "lost_sector_aries",
+    obj: "https://starblast.io/lost_sector/LostSector_Aries_HardEdges.obj",
+    diffuse: "https://starblast.io/lost_sector/LostSector_Aries_LostSector_Aries_Diffuse.jpg",
+    bump: "https://starblast.io/lost_sector/LostSector_Aries_LostSector_Aries_Height.jpg",
+    specular: "https://starblast.io/lost_sector/LostSector_Aries_LostSector_Aries_Specular.jpg",
+    shininess: 10, emissiveColor: 0, specularColor: 0xFFFFFF, transparent: false
+  }
+}
 
 addObject = function(Name, ID, info) {
   const defaultInfo = {x: 0, y: 0, z: 0, sx: 0, sy: 0, sz: 0, rx: Math.PI, rz: Math.PI};
@@ -399,3 +382,5 @@ addObject = function(Name, ID, info) {
     rotation: {x: info.rx, y: 0, z: info.rz}
   });
 };
+
+addObject("lost_sector_aries", Objects.lost_sector_aries, {x: 20 * 5, y: 20 * 5, z: -60, sx: 1.5, sy: 1.5, sz: 1.5, rx: 0});
