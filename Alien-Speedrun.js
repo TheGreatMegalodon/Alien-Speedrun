@@ -383,4 +383,4 @@ addObject = function(Name, ID, info) {
   });
 };
 
-addObject("lost_sector_aries", Objects.lost_sector_aries, {x: 20 * 5, y: 20 * 5, z: -60, sx: 1.5, sy: 1.5, sz: 1.5, rx: 0});
+addObject("lost_sector_aries", Objects.lost_sector_aries, {x: 20 * 5, y: 20 * 5, z: -60, sx: 2, sy: 2, sz: 2, rx: 0});
