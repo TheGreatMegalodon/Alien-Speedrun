@@ -1,5 +1,5 @@
 const mod_version =
-"1.0.5";
+"1.0.6";
 
 /*
 Mod creator: Megaldoon
@@ -263,8 +263,9 @@ this.event = function(event, game) {
           });
           setTimeout(() => {
             if (nextAlien_Code == 13) {
-              if (nextAlien_Level < 3) game.aliens[0].set({damage: 40, rate: 2});
-              else game.aliens[0].set({damage: 200, rate: 4, laser_speed: 160});
+              const alien = game.aliens[0];
+              if (nextAlien_Level < 3) alien.set({damage: 40, rate: 2});
+              else alien.set({damage: 600, rate: 0.1, laser_speed: 160});
             }
           }, 200);
           if (nextAlien_Code == 12 && nextAlien_Level === 0) {
