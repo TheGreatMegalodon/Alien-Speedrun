@@ -294,6 +294,7 @@ this.event = function(event, game) {
             "Aliens Killed" : event.ship.custom.kills.toString(),
             "Score" : event.ship.score.toString()
           });
+          game.modding.terminal.echo(`[[bg;tomato;]\n - Restart The Mod - \n]`);
         }, 4000);
       }
       break;
