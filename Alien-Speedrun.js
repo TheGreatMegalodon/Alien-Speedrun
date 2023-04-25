@@ -1,5 +1,5 @@
 const mod_version =
-"1.0.1";
+"1.0.2";
 
 /*
 Mod creator: Megaldoon
@@ -79,7 +79,7 @@ var startingGame = false;
 var instrutor_ended = false;
 var nextAlien_Code = 10;
 var nextAlien_Level = 0;
-var collectibles = [10, 20, 41, 42, 90, 91];
+var collectibles = [10, 11, 20, 21, 41, 42, 90, 91];
 this.tick = function(game) {
   if (game.step % 60 === 0) {
     switch(startingGame) {
@@ -143,6 +143,7 @@ function endScoreboard(game) {
 }
 
 function prepareScoreboard(game) {
+  value = Initialize(value);
   let Scoreboard = {
     id: "scoreboard",
     clickable: false,
@@ -151,11 +152,18 @@ function prepareScoreboard(game) {
       {type: "text", position: [14, 4, 100, 8], value: format_time(time), color: "rgb(255,255,255)", align: "left"},
       {type: "text", position: [58, 4, 100, 8], value: `Stage:  ${stage}`, color: "rgb(255,255,255)", align: "left"},
       {type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)"},
-      {type: "text", position: [0, 45, 100, 10], value: `Initializing`, color: "rgb(255,255,255)", align: "center"},
-      {type: "text", position: [0, 57, 100, 10], value: `Data`, color: "rgb(255,255,255)", align: "center"}
+      {type: "text", position: [0, 52.5, 100, 8], value: value, color: "rgb(255,255,255)", align: "center"},
     ]
   };
   for (let ship of game.ships) ship.setUIComponent(Scoreboard);
+}
+
+function Initialize(oldValue) {
+  const values = ["Initializing Data!", "Initializing Data.!", "Initializing Data..!", "Initializing Data...!"];
+  const currentValue = oldValue;
+  const currentIndex = values.indexOf(currentValue);
+  const nextIndex = (currentIndex + 1) % values.length;
+  return values[nextIndex];
 }
 
 function updateScoreboard(game) {
@@ -222,7 +230,7 @@ this.event = function(event, game) {
           setTimeout(() => {
             if (nextAlien_Code == 13) {
               if (nextAlien_Level < 3) game.aliens[0].set({damage: 40, rate: 2});
-              else game.aliens[0].set({damage: 250, rate: 6});
+              else game.aliens[0].set({damage: 200, rate: 4, laser_speed: 160});
             }
           }, 200);
           if (nextAlien_Code == 12 && nextAlien_Level === 0) {
@@ -247,7 +255,7 @@ this.event = function(event, game) {
             "Aliens Killed" : event.ship.custom.kills,
             "Score" : event.ship.score
           });
-        }, 5000);
+        }, 4000);
       }
       break;
     case "ship_destroyed":
@@ -284,7 +292,7 @@ var ship_instructor = function(ship, message, character = "Lucina", delay = 0, h
         if (allow) {
           if (!instrutor_ended) {
             instrutor_ended = true;
-            addObject("MapCenter", MapCenter, {x: 20 * 5, y: 20 * 5, sx: 60, sy: 60, rz: 0});
+            addObject("MapCenter", MapCenter, {x: 20 * 5, y: 20 * 5, z: -15, sx: 60, sy: 60, rz: 0});
           } else {
             time = 10;
             startingGame = "ended";
@@ -355,7 +363,7 @@ function MapOpen() {
 const MapCenter = {
   id: "MapCenter",
   obj: "https://starblast.data.neuronality.com/mods/objects/plane.obj",
-  emissive: "https://raw.githubusercontent.com/TheGreatMegalodon/Dueling-Component/main/Dueling_Component/Aliens_SpeedRun.png",
+  emissive: "https://raw.githubusercontent.com/TheGreatMegalodon/Dueling-Component/main/Dueling_Component/Aliens_SpeedRun_blur.png",
 };
 
 const lost_sector_aries = {
