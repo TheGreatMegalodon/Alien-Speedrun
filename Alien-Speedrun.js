@@ -1,5 +1,5 @@
 const mod_version =
-"1.0.7";
+"2.0.0";
 
 /*
 Mod creator: Megaldoon
@@ -41,7 +41,6 @@ const aliensInfo = {
   10: { name: "Chicken", difficulty: { 0: "Easy", 1: "Easy", 2: "Easy", 3: "Medium" } },
   11: { name: "Crab", difficulty: { 0: "Easy", 1: "Easy", 2: "Easy", 3: "Easy" } },
   12: { name: "Fortress", difficulty: { 0: "Medium", 1:  "Hard", 2:  "Hard", 3:  "Hard" } },
-  13: { name: "Caterpillar", difficulty: { 0: "Easy", 1:  "Easy", 2:  "Easy", 3: "Extremly Hard" } }, // troll
   14: { name: "Candlestick", difficulty: { 0: "Easy", 1: "Easy", 2: "Easy", 3: "Easy" } },
   15: { name: "Hirsute", difficulty: { 0: "Medium", 1:  "Hard", 2:  "Hard", 3:  "Hard" } },
   16: { name: "Piranha", difficulty: { 0: "Easy", 1: "Easy", 2: "Easy", 3: "Hard" } },
@@ -49,12 +48,23 @@ const aliensInfo = {
   18: { name: "Fork", difficulty: { 0: "Easy", 1: "Easy", 2: "Easy", 3: "Easy" } },
   19: { name: "Saucer", difficulty: { 0: "Medium", 1: "Medium", 2:  "Hard", 3:  "Hard" } },
   20: { name: "Final Boss", difficulty: { 0: "Hard", 1: "Hard", 2: "Hard", 3: "Hard" } },
+  // troll
+  13: { name: "Caterpillar", difficulty: { 0:  "Medium", 1:  "Hard", 2: "Extremly Hard" } },
+};
+
+const wavesInfo = {
+  0: { codes: { 1: {code: 10, level: 0}, 2: {code: 11, level: 0}, 3: {code: 14, level: 0}, 4: {code: 16, level: 0}, 5: {code: 17, level: 0}, 6: {code: 18, level: 0} }, len: 6 }, // green
+  1: { codes: { 1: {code: 10, level: 1}, 2: {code: 11, level: 1}, 3: {code: 12, level: 0}, 4: {code: 14, level: 1}, 5: {code: 15, level: 0}, 6: {code: 16, level: 1}, 7: {code: 17, level: 1}, 8: {code: 18, level: 1}, 9: {code: 19, level: 0} }, len: 9 }, // yellow
+  2: { codes: { 1: {code: 10, level: 2}, 2: {code: 11, level: 2}, 3: {code: 12, level: 1}, 4: {code: 14, level: 2}, 5: {code: 15, level: 1}, 6: {code: 16, level: 2}, 7: {code: 19, level: 1}, 8: {code: 20, level: 0} }, len: 8 }, // red
+  3: { codes: { 1: {code: 10, level: 3}, 2: {code: 16, level: 3}, 3: {code: 17, level: 2}, 4: {code: 18, level: 2}, 5: {code: 19, level: 2}, 6: {code: 20, level: 1} }, len: 6 }, // purple
+  4: { codes: { 1: {code: 13, level: 0}, 2: {code: 13, level: 1}, 3: {code: 13, level: 2} }, len: 3 }, // light blue
+  5: { codes: { 1: {code: 0, level: 0} }, len: Infinity } // ending
 };
 
 const timing = {
-  600: {txt1: `${format_time(600)} minutes on the clock!`, txt2: ``, color: `rgba(255, 255, 255, 0.8)`},
-  1200: {txt1: `${format_time(1200)} minutes on the clock!`, txt2: ``, color: `rgba(255, 255, 255, 0.8)`},
-  1800: {txt1: `${format_time(1800)} minutes on the clock!`, txt2: `Time is running high! too high..`, color: `rgba(255, 55, 55, 0.8)`}
+  600: {txt1: `${format_time(600)}`, txt2: `Minutes on the clock!`, color: `rgba(255, 155, 55, 0.8)`},
+  1200: {txt1: `${format_time(1200)}`, txt2: `Minutes on the clock.!`, color: `rgba(255, 155, 55, 0.8)`},
+  1800: {txt1: `${format_time(1800)}`, txt2: `Minutes on the clock..! Time is running high! too high..`, color: `rgba(255, 55, 55, 0.8)`}
 };
 
 const ship = [Spectator_191 = '{"name":"Spectator","level":1.9,"model":1,"size":0.025,"zoom":0.075,"specs":{"shield":{"capacity":[1e-30,1e-30],"reload":[1000,1000]},"generator":{"capacity":[1e-30,1e-30],"reload":[1,1]},"ship":{"mass":1,"speed":[200,200],"rotation":[1000,1000],"acceleration":[1000,1000]}},"bodies":{"face":{"section_segments":100,"angle":0,"offset":{"x":0,"y":0,"z":0},"position":{"x":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"y":[-2,-2,2,2],"z":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"width":[0,1,1,0],"height":[0,1,1,0],"vertical":true,"texture":[6]}},"typespec":{"name":"Spectator","level":1,"model":1,"code":101,"specs":{"shield":{"capacity":[1e-30,1e-30],"reload":[1000,1000]},"generator":{"capacity":[1e-30,1e-30],"reload":[1,1]},"ship":{"mass":1,"speed":[200,200],"rotation":[1000,1000],"acceleration":[1000,1000]}},"shape":[0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001],"lasers":[],"radius":0.001}}'];
@@ -77,8 +87,10 @@ this.options = {
   ships: ship
 };
 
-var time = 32;
+var time = 30;
 var stage = 0;
+var code = 1;
+var blinkColor;
 var startingGame = false;
 var instrutor_ended = false;
 var endGameTimer;
@@ -88,14 +100,12 @@ var collectibles = [10, 11, 20, 21, 41, 42, 90, 91];
 var asteroid_positions = getCords(100,  {cords: 100}, false);
 var asteroid_sizes = setVariables({order: 3, len: 10, gap: 2});
 var asteroid_velocity = getCords(6,  {cords: 0}, false).map(pos => pos/12.5).filter(pos => pos !== 0);
+function blink(passiveColor) {if (blinkColor == passiveColor) blinkColor = "rgb(55,55,55)"; else blinkColor = passiveColor; return blinkColor}
 this.tick = function(game) {
-  if (game.step % 30 === 0) {
-    if (game.ships.length > 1) { startingGame = false, colorBLK = blink("rgb(100,100,255)"), blocked();
-      game.ships.forEach(ship => { alert(ship, `More than 2 players detected`, `Please restart the mod in order to continue playing`, colorBLK, 8000) });
-    }
-  }
   if (game.step % 60 === 0) {
+    if (game.ships.length > 1) startingGame = -1;
     switch(startingGame) {
+      case -1: colorBLK = blink("rgb(100,100,255)"), blocked(), game.ships.forEach(ship => { alert(ship, `More than 2 players detected`, `Please restart the mod in order to continue playing`, colorBLK, 8000) }); break;
       case true:
         if (time >= 0) {
           time--;
@@ -113,7 +123,7 @@ this.tick = function(game) {
             weapon_drop: collectibles[~~(Math.random() * collectibles.length)]
           });
           const alienn = aliensInfo[nextAlien_Code];
-          game.ships.forEach(ship => {alert(ship, `First Alien!`, `Alien:  ${alienn.name}, difficulty:  ${alienn.difficulty[nextAlien_Level]}`);}); 
+          game.ships.forEach(ship => {alert(ship, `First Alien!`, `Alien:  ${alienn.name}, difficulty:  ${alienn.difficulty[nextAlien_Level]}`)}); 
         }
         break;
       case 1:
@@ -132,13 +142,13 @@ this.tick = function(game) {
         if (time >= 0) {
           time--;
           endScoreboard(game);
-          if (!instrutor_ended) game.ships.forEach(ship => {alert(ship, `Ending...!`, format_time(time+1), "rgba(255,255,255, 0.8)", 1500);});
+          if (!instrutor_ended) game.ships.forEach(ship => {alert(ship, `Ending...!`, format_time(time+1), "rgba(255,255,255, 0.8)", 1500)});
         } else {
           for (let ship of game.ships) {
             ship.gameover({
               "You WON!" : ship.name.toString(),
               "-" : "-",
-              "Time Survived" : format_time(endGameTimer-1),
+              "Total Time" : format_time(endGameTimer-1),
               "Aliens Killed" : ship.custom.kills.toString(),
               "Score" : ship.score.toString()
             });
@@ -149,161 +159,46 @@ this.tick = function(game) {
   }
 };
 
-var blinkColor;
-function blink(passiveColor) {
-  if (blinkColor == passiveColor) blinkColor = "rgb(55,55,55)";
-  else blinkColor = passiveColor;
-  return blinkColor;
-}
-
-function blocked() {
-  let Scoreboard = {
-    id: "scoreboard",
-    clickable: false,
-    visible: true,
-    components: [
-      {type: "text", position: [0, 4, 100, 8], value: `Too many players`, color: "rgb(100,100,255)", align: "center"},
-      {type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)"},
-      {type: "text", position: [0, 45, 100, 8], value: `C0.mmun1..c@t1o.ns..`, color: "rgb(255,255,255)", align: "center"},
-      {type: "text", position: [0, 57, 100, 8], value: `S..cr@..m8l.ed.`, color: "rgb(255,255,255)", align: "center"}
-    ]
-  };
-  game.ships.forEach(ship => {ship.setUIComponent(Scoreboard)}); 
-}
-
-function endScoreboard(game) {
-  let Scoreboard = {
-    id: "scoreboard",
-    clickable: false,
-    visible: true,
-    components: [
-      {type: "text", position: [14, 4, 100, 8], value: `Game is ending`, color: "rgb(255,255,255)", align: "left"},
-      {type: "text", position: [72, 4, 100, 8], value: format_time(time), color: "rgb(255,255,255)", align: "left"},
-      {type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)"},
-      {type: "text", position: [0, 45, 100, 8], value: `Communications`, color: "rgb(255,255,255)", align: "center"},
-      {type: "text", position: [0, 57, 100, 8], value: `Over`, color: "rgb(255,255,255)", align: "center"}
-    ]
-  };
-  game.ships.forEach(ship => {ship.setUIComponent(Scoreboard)});
-}
-
-let dataInitIndex = 0;
-const dataInitValues = ["Initializing Data!", "Initializing Data.!", "Initializing Data..!", "Initializing Data...!"];
-function prepareScoreboard(game) {
-  let Scoreboard = {
-    id: "scoreboard",
-    clickable: false,
-    visible: true,
-    components: [
-      {type: "text", position: [14, 4, 100, 8], value: format_time(time), color: "rgb(255,255,255)", align: "left"},
-      {type: "text", position: [58, 4, 100, 8], value: `Stage:  ${stage}`, color: "rgb(255,255,255)", align: "left"},
-      {type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)"},
-      {type: "text", position: [0, 52.5, 100, 8], value: dataInitValues[(dataInitIndex++) % dataInitValues.length], color: "rgb(255,255,255)", align: "center"},
-    ]
-  };
-  game.ships.forEach(ship => {ship.setUIComponent(Scoreboard)});
-}
-
-function updateScoreboard(game) {
-  const alienLB = aliensInfo[nextAlien_Code];
-  const colorStage = (stage > 0) ? (stage < 3) ? "rgb(255,155,55)" : "rgb(255,55,55)" : "rgb(255,255,255)";
-  const colorInformations = (alienLB.difficulty[nextAlien_Level] == "Easy") ? "rgb(55,255,55)" : (alienLB.difficulty[nextAlien_Level] == "Medium") ? "rgb(255,155,55)" : (alienLB.difficulty[nextAlien_Level] == "Medium") ? "rgb(151,0,0)" : "rgb(255,55,55)";
-  const colorAlien = (alienLB.name == "Caterpillar" || alienLB.name == "Final Boss") ? "rgb(155,55,255)" : "rgb(255,255,255)";
-  const down = 10;
-  let Scoreboard = {
-    id: "scoreboard",
-    clickable: false,
-    visible: true,
-    components: [
-      {type: "text", position: [14, 4, 100, 8], value: format_time(time++), color: "rgb(255,255,255)", align: "left"},
-      {type: "text", position: [58, 4, 100, 8], value: `Stage:  ${stage}`, color: colorStage, align: "left"},
-      {type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)"},
-      // Kills
-      {type: "text", position: [0, 18+down-2.5, 100, 8], value: `Aliens Killed:`, color: "rgb(255,255,255)", align: "center"},
-      {type: "box", position: [31, 25.5+down-2.5, 38, 1], fill: "rgba(155, 155, 155, 0.4)"},
-      {type: "text", position: [0, 28+down-2.5, 100, 8], value: game.ships[0].custom.kills, color: "rgb(255,255,255)", align: "center"},
-      // Alien Name
-      {type: "text", position: [0, 40+down, 100, 8], value: `Current Alien:`, color: "rgb(255,255,255)", align: "center"},
-      {type: "box", position: [30, 47.5+down, 40, 1], fill: "rgba(155, 155, 155, 0.4)"},
-      {type: "text", position: [0, 50+down, 100, 8], value: alienLB.name, color: colorAlien, align: "center"},
-      // Alien Difficulty
-      {type: "text", position: [0, 65+down, 100, 8], value: `Alien Difficulty:`, color: "rgb(255,255,255)", align: "center"},
-      {type: "box", position: [27.5, 72.5+down, 45, 1], fill: "rgba(155, 155, 155, 0.4)"},
-      {type: "text", position: [0, 75+down, 100, 8], value: alienLB.difficulty[nextAlien_Level], color: colorInformations, align: "center"},
-    ]
-  };
-  for (const ship of game.ships) {
-    if (timing.hasOwnProperty(time)) alert(ship, timing[time].txt1, timing[time].txt2, timing[time].color, 4000, {txt1: 75, txt2: 81});
-    ship.setUIComponent(Scoreboard);
-  }
-}
-
+function getNextAlien() { if (code === wavesInfo[stage].len) stage++, code = 1; else code++; return {code: wavesInfo[stage].codes[code].code, level: wavesInfo[stage].codes[code].level}}
 function isBoss(Code, Level) {return (Code == 20 || Code == 19 || Code == 15 || Code == 12 || (Code == 16 && Level == 3) || (Code == 10 && Level == 3))}
 this.event = function(event, game) {
   switch(event.name) {
     case "alien_destroyed":
       event.killer.custom.kills++;
-      if (event.alien.code === 20 && event.alien.level === 3) {
-        setTimeout(() => {gameFinished(event.killer)}, 2000);
+      const nextAlien = getNextAlien();
+      if (stage === 5) {
+        startingGame = false;
+        endGameTimer = time;
+        ship.set({x: 0, y: 0, vx: 0, vy: 0, collider: false, type: 191, idle: true});
+        alert(event.killer, `Finished!`, `Well done Commander!`, "rgba(55,255,55,0.8)");
+        setTimeout(() => {gameFinished(event.killer)},4000);
       } else {
-        if (event.alien.code === 20) {
-          // Change Stage
-          stage++;
-          nextAlien_Code = 10;
-          nextAlien_Level = event.alien.level+1;
-        } else {
-          // Normal
-          nextAlien_Code = event.alien.code+1;
-          nextAlien_Level = event.alien.level;
-        }
+        nextAlien_Code = nextAlien.code;
+        nextAlien_Level = nextAlien.level;
         const alien = aliensInfo[nextAlien_Code];
-        alert(event.killer, `Well Done!`, `Next alien:  ${alien.name}, difficulty:  ${alien.difficulty[nextAlien_Level]}`);
+        (nextAlien.code == 13) ? alert(event.killer, `Warning!`, `Next alien:  ${alien.name}, difficulty:  ${alien.difficulty[nextAlien_Level]}`, "rgba(155,55,255,0.8)") : alert(event.killer, `Well Done!`, `Next alien:  ${alien.name}, difficulty:  ${alien.difficulty[nextAlien_Level]}`);
         const collectible = isBoss(nextAlien_Code, nextAlien_Level) ? 12 : collectibles[~~(Math.random() * collectibles.length)];
         const crystals = isBoss(nextAlien_Code, nextAlien_Level) ? setVariables({order: (Math.pow(stage+1, 3))+10, len: 10, gap: 2})[~~(Math.random() * setVariables({order: (Math.pow(stage+1, 3))+10, len: 10, gap: 2}).length)] : setVariables({order: stage+4, len: 10, gap: 2})[~~(Math.random() * setVariables({order: stage+4, len: 10, gap: 2}).length)];
         setTimeout(() => {
-          game.addAlien({
-            code: nextAlien_Code, 
-            level: nextAlien_Level, 
-            x: game.options.map_size * 5, 
-            y: game.options.map_size * 5,
-            crystal_drop: crystals,
-            weapon_drop: collectible
-          });
-          setTimeout(() => {
-            if (nextAlien_Code == 13) {
+          game.addAlien({ code: nextAlien_Code,  level: nextAlien_Level,  x: game.options.map_size * 5,  y: game.options.map_size * 5, crystal_drop: crystals, weapon_drop: collectible });
+          if (nextAlien_Code == 13) {
+            setTimeout(() => {
               const alien = game.aliens[0];
-              if (nextAlien_Level < 3) alien.set({damage: 40, rate: 2});
-              else alien.set({damage: 600, rate: 0.1, laser_speed: 160});
-            }
-          }, 200);
-          if (nextAlien_Code == 12 && nextAlien_Level === 0) {
-            for (let ship of game.ships) {
-              ship_instructor(ship, "\n\n\n\n\n\n", "Zoltar", 4);
-              ship_instructor(ship, "Haha!", "Zoltar", 5);
-              ship_instructor(ship, "Try Minning up before attacking that one!", "Zoltar", 9, 5, false);
-            } 
+              switch(code) {
+                case 1: alien.set({damage: 100, rate: 2}); break;
+                case 2: alien.set({damage: 200, rate: 1}); break;
+                case 3: alien.set({damage: 600, rate: 0.1, laser_speed: 160}); break;
+              }
+            }, 200);
           }
         }, 4000);
       }
       break;
     case "ship_spawned":
-      if (!event.ship.custom.lastlyDied) prepareShip(event.ship);
-      else { alert(event.ship, `You failed!`, `Be better next time!`, "rgba(255, 55, 55, 0.8)");
-      event.ship.set({x: 0, y: 0, vx: 0, vy: 0, collider: false, type: 191, idle: true});
-        setTimeout(() => {
-          const alien = aliensInfo[nextAlien_Code];
-          event.ship.gameover({
-            "You LOST!" : event.ship.name.toString(),
-            "-" : "-",
-            "Killer" : alien.name.toString(),
-            "Difficulty" : alien.difficulty[nextAlien_Level].toString(),
-            "Stage" : stage.toString(),
-            "Time Survived" : format_time(time-1).toString(),
-            "Aliens Killed" : event.ship.custom.kills.toString(),
-            "Score" : event.ship.score.toString()
-          });
-          game.modding.terminal.echo(`[[bg;tomato;]\n - Restart The Mod - \n]`);
-        }, 4000);
+      if (!game.custom.Hasjoined) prepareShip(event.ship, game);
+      else {
+        if (game.custom.lastlyDied) desactivate(event.ship);
+        else expulsed(event.ship);
       }
       break;
     case "asteroid_destroyed":
@@ -321,7 +216,7 @@ this.event = function(event, game) {
       }
       break;
     case "ship_destroyed":
-      event.ship.custom.lastlyDied = true;
+      game.custom.lastlyDied = true;
       startingGame = false;
       break;
   }
@@ -368,22 +263,135 @@ var ship_instructor = function(ship, message, character = "Lucina", delay = 0, h
   setTimeout(instructor_func, delay * 650);
 };
 
-function prepareShip(ship, timed = 0) {
+function expulsed(ship) {
+  alert(ship, `This game is full`, `host one yourself!`, "rgba(255, 55, 55, 0.8)");
+  ship.set({x: 0, y: 0, vx: 0, vy: 0, collider: false, type: 191, idle: true});
+  setTimeout(() => {
+    ship.gameover({
+      "Create your own game" : ship.name.toString(),
+      "Alien SpeedRun" : "Cannot hold more than",
+      "1 players at once" : "-"
+    });
+    game.modding.terminal.echo(`[[bg;tomato;]\n - Restart The Mod - \n]`);
+  }, 5000);
+}
+
+function desactivate(ship) {
+  alert(ship, `You failed!`, `Be better next time!`, "rgba(255, 55, 55, 0.8)");
+  ship.set({x: 0, y: 0, vx: 0, vy: 0, collider: false, type: 191, idle: true});
+  setTimeout(() => {
+    const alien = aliensInfo[nextAlien_Code];
+    ship.gameover({
+      "You LOST!" : ship.name.toString(),
+      "-" : "-",
+      "Killer" : alien.name.toString(),
+      "Difficulty" : alien.difficulty[nextAlien_Level].toString(),
+      "Stage" : stage.toString(),
+      "Time Survived" : format_time(time-1).toString(),
+      "Aliens Killed" : ship.custom.kills.toString(),
+      "Score" : ship.score.toString()
+    });
+    game.modding.terminal.echo(`[[bg;tomato;]\n - Restart The Mod - \n]`);
+  }, 4000);
+}
+
+function blocked() {
+  let Scoreboard = {
+    id: "scoreboard",
+    clickable: false,
+    visible: true,
+    components: [
+      {type: "text", position: [0, 4, 100, 8], value: `Game corrupted`, color: "rgb(100,100,255)", align: "center"},
+      {type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)"},
+      {type: "text", position: [0, 45, 100, 8], value: `C0.mmun1..c@t1o.ns..`, color: "rgb(255,255,255)", align: "center"},
+      {type: "text", position: [0, 57, 100, 8], value: `S..cr@..m8l.ed.`, color: "rgb(255,255,255)", align: "center"}
+    ]
+  };
+  game.ships.forEach(ship => {ship.setUIComponent(Scoreboard)}); 
+}
+
+function endScoreboard(game) {
+  let Scoreboard = {
+    id: "scoreboard",
+    clickable: false,
+    visible: true,
+    components: [
+      {type: "text", position: [14, 4, 100, 8], value: `Game is ending`, color: "rgb(255,255,255)", align: "left"},
+      {type: "text", position: [72, 4, 100, 8], value: format_time(time), color: "rgb(255,255,255)", align: "left"},
+      {type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)"},
+      {type: "text", position: [0, 45, 100, 8], value: `Communications`, color: "rgb(255,255,255)", align: "center"},
+      {type: "text", position: [0, 57, 100, 8], value: `Over`, color: "rgb(255,255,255)", align: "center"}
+    ]
+  };
+  game.ships.forEach(ship => {ship.setUIComponent(Scoreboard)});
+}
+
+let dataInitIndex = 0;
+const dataInitValues = ["Initializing Data!", "Initializing Data.!", "Initializing Data..!", "Initializing Data...!"];
+function prepareScoreboard(game) {
+  let Scoreboard = {
+    id: "scoreboard",
+    clickable: false,
+    visible: true,
+    components: [
+      {type: "text", position: [14, 4, 100, 8], value: format_time(time), color: "rgb(255,255,255)", align: "left"},
+      {type: "text", position: [58, 4, 100, 8], value: `Stage:  ${stage}`, color: "rgb(255,255,255)", align: "left"},
+      {type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)"},
+      {type: "text", position: [0, 52.5, 100, 8], value: dataInitValues[(dataInitIndex++) % dataInitValues.length], color: "rgb(255,255,255)", align: "center"},
+    ]
+  };
+  game.ships.forEach(ship => {ship.setUIComponent(Scoreboard)});
+}
+
+function updateScoreboard(game) {
+  const alienLB = aliensInfo[nextAlien_Code];
+  const colorStage = (stage > 0) ? (stage < 3) ? (stage > 3) ? "rgb(155,55,255)" : "rgb(255,155,55)" : "rgb(255,55,55)" : "rgb(255,255,255)";
+  const colorInformations = (alienLB.difficulty[nextAlien_Level] == "Easy") ? "rgb(55,255,55)" : (alienLB.difficulty[nextAlien_Level] == "Medium") ? "rgb(255,155,55)" : (alienLB.difficulty[nextAlien_Level] == "Medium") ? "rgb(151,0,0)" : "rgb(255,55,55)";
+  const colorAlien = (alienLB.name == "Caterpillar" || alienLB.name == "Final Boss") ? "rgb(155,55,255)" : "rgb(255,255,255)";
+  const down = 10;
+  let Scoreboard = {
+    id: "scoreboard",
+    clickable: false,
+    visible: true,
+    components: [
+      {type: "text", position: [14, 4, 100, 8], value: format_time(time++), color: "rgb(255,255,255)", align: "left"},
+      {type: "text", position: [58, 4, 100, 8], value: `Stage:  ${stage}`, color: colorStage, align: "left"},
+      {type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)"},
+      // Kills
+      {type: "text", position: [0, 18+down-2.5, 100, 8], value: `Aliens Killed:`, color: "rgb(255,255,255)", align: "center"},
+      {type: "box", position: [31, 25.5+down-2.5, 38, 1], fill: "rgba(155, 155, 155, 0.4)"},
+      {type: "text", position: [0, 28+down-2.5, 100, 8], value: game.ships[0].custom.kills, color: "rgb(255,255,255)", align: "center"},
+      // Alien Name
+      {type: "text", position: [0, 40+down, 100, 8], value: `Current Alien:`, color: "rgb(255,255,255)", align: "center"},
+      {type: "box", position: [30, 47.5+down, 40, 1], fill: "rgba(155, 155, 155, 0.4)"},
+      {type: "text", position: [0, 50+down, 100, 8], value: alienLB.name, color: colorAlien, align: "center"},
+      // Alien Difficulty
+      {type: "text", position: [0, 65+down, 100, 8], value: `Alien Difficulty:`, color: "rgb(255,255,255)", align: "center"},
+      {type: "box", position: [27.5, 72.5+down, 45, 1], fill: "rgba(155, 155, 155, 0.4)"},
+      {type: "text", position: [0, 75+down, 100, 8], value: alienLB.difficulty[nextAlien_Level], color: colorInformations, align: "center"},
+    ]
+  };
+  for (const ship of game.ships) {
+    if (timing.hasOwnProperty(time)) alert(ship, timing[time].txt1, timing[time].txt2, timing[time].color, 4000, {txt1: 75, txt2: 81});
+    ship.setUIComponent(Scoreboard);
+  }
+}
+
+function prepareShip(ship, game,timed = 0) {
   startingGame = true;
+  game.custom.lastlyDied = false;
+  game.custom.Hasjoined = true;
   ship.custom.kills = 0;
   ship.set({x: 0, y: 0});
   ship_instructor(ship, "Welcome to..\n", "Zoltar");
   ship_instructor(ship, "Alien Speedrun!\n", "Zoltar", timed += 3);
   ship_instructor(ship, "To win the game, you must kill all the aliens as quickly as possible without dying once..", "Zoltar", timed += 3);
-  ship_instructor(ship, "There are 4 steps, from 0 to 3, each one more difficult than the other", "Zoltar", timed += 8);
-  ship_instructor(ship, "Complete them as quickly as possible and maybe become the record holder!", "Zoltar", timed += 7);
-  ship_instructor(ship, "Good luck Commander!", "Zoltar", timed += 7, 4);
+  ship_instructor(ship, "There are 5 stages, from 0 to 4, each one is more difficult than the other", "Zoltar", timed += 8);
+  ship_instructor(ship, "Complete them as quickly as possible and maybe become the new record holder!", "Zoltar", timed += 7);
+  ship_instructor(ship, "\nGood luck Commander!", "Zoltar", timed += 7, 4);
 }
 
 function gameFinished(ship, timed = 0) {
-  startingGame = false;
-  endGameTimer = time;
-  ship.set({x: 0, y: 0, vx: 0, vy: 0, collider: false, type: 191, idle: true});
   ship_instructor(ship, "\n\n\n\n\n\n", "Zoltar", 1);
   ship_instructor(ship, `Well done! Commander`, "Zoltar", timed += 2);
   ship_instructor(ship, `You successfuly killed all of the aliens.`, "Zoltar", timed += 5);
