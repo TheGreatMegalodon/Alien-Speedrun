@@ -5,4 +5,4 @@
 
 ### Mod developer - Megalodon
 
-### Mod Version [1.0.7](https://github.com/TheGreatMegalodon/Alien-Speedrun/blob/main/Alien-Speedrun.js)
+### Mod Version [2.0.0](https://github.com/TheGreatMegalodon/Alien-Speedrun/blob/main/Alien-Speedrun.js)
