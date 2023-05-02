@@ -169,7 +169,7 @@ this.event = function(event, game) {
       if (stage === 5) {
         startingGame = false;
         endGameTimer = time;
-        ship.set({x: 0, y: 0, vx: 0, vy: 0, collider: false, type: 191, idle: true});
+        event.killer.set({x: 0, y: 0, vx: 0, vy: 0, collider: false, type: 191, idle: true});
         alert(event.killer, `Finished!`, `Well done Commander!`, "rgba(55,255,55,0.8)");
         setTimeout(() => {gameFinished(event.killer)},4000);
       } else {
