@@ -1,5 +1,5 @@
 const mod_version =
-"2.0.1";
+"2.0.2";
 
 /*
 Mod creator: Megaldoon
@@ -72,6 +72,48 @@ const intraWaves = {
   "passive": { velocityMultiplier: 1, sizeReducer: 1, spawnFrequency: 4, spawnLimit: 4 }
 };
 
+const shipsInformations = {
+  // 1
+  101: { name: "Fly", tier: "1" },
+  // 2
+  201: { name: "Delta-Fighter", tier: "2" },
+  202: { name: "Trident", tier: "2" },
+  // 3
+  301: { name: "Pulse-Fighter", tier: "3" },
+  302: { name: "Side-Fighter", tier: "3" },
+  303: { name: "Shadow X-1", tier: "3" },
+  304: { name: "Y-Defender", tier: "3" },
+  // 4
+  401: { name: "Vanguard", tier: "4" },
+  402: { name: "Mercury", tier: "4" },
+  403: { name: "X-Warior", tier: "4" },
+  404: { name: "Side-interceptor", tier: "4" },
+  405: { name: "Pioneer", tier: "4" },
+  406: { name: "Crusader", tier: "4" },
+  // 5
+  501: { name: "U-Sniper", tier: "5" },
+  502: { name: "FuryStar", tier: "5" },
+  503: { name: "T-Warrior", tier: "5" },
+  504: { name: "Aetos", tier: "5" },
+  505: { name: "Shadow X-2", tier: "5" },
+  506: { name: "Howler", tier: "5" },
+  507: { name: "Bat-Defender", tier: "5" },
+  // 6
+  601: { name: "Advanced-Fighter", tier: "6" },
+  602: { name: "Scorpion", tier: "6" },
+  603: { name: "Marauder", tier: "6" },
+  604: { name: "Condor", tier: "6" },
+  605: { name: "A-Speedster", tier: "6" },
+  606: { name: "Rock-Tower", tier: "6" },
+  607: { name: "Barracuda", tier: "6" },
+  608: { name: "O-Defender", tier: "6" },
+  // 7
+  701: { name: "Odyssey", tier: "7" },
+  702: { name: "Shadow X-3", tier: "7" },
+  703: { name: "Bastion", tier: "7" },
+  704: { name: "Aries", tier: "7" }
+};
+
 const ship = [Spectator_191 = '{"name":"Spectator","level":1.9,"model":1,"size":0.025,"zoom":0.075,"specs":{"shield":{"capacity":[1e-30,1e-30],"reload":[1000,1000]},"generator":{"capacity":[1e-30,1e-30],"reload":[1,1]},"ship":{"mass":1,"speed":[200,200],"rotation":[1000,1000],"acceleration":[1000,1000]}},"bodies":{"face":{"section_segments":100,"angle":0,"offset":{"x":0,"y":0,"z":0},"position":{"x":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"y":[-2,-2,2,2],"z":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"width":[0,1,1,0],"height":[0,1,1,0],"vertical":true,"texture":[6]}},"typespec":{"name":"Spectator","level":1,"model":1,"code":101,"specs":{"shield":{"capacity":[1e-30,1e-30],"reload":[1000,1000]},"generator":{"capacity":[1e-30,1e-30],"reload":[1,1]},"ship":{"mass":1,"speed":[200,200],"rotation":[1000,1000],"acceleration":[1000,1000]}},"shape":[0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001],"lasers":[],"radius":0.001}}'];
 const music = ["civilisation.mp3", "procedurality.mp3", "argon.mp3", "crystals.mp3", "red_mist.mp3", "warp_drive.mp3"];
 const musicApplyed = music[~~(Math.random() * music.length)];
@@ -99,6 +141,7 @@ var blinkColor;
 var startingGame = false;
 var instrutor_ended = false;
 var endGameTimer;
+var knownPlayers;
 var nextAlien_Code = 10;
 var nextAlien_Level = 0;
 var collectibles = [10, 11, 20, 21, 41, 42, 90, 91];
@@ -115,7 +158,7 @@ this.tick = function(game) {
         if (time >= 0) {
           time--;
           prepareScoreboard(game);
-          if (instrutor_ended) game.ships.forEach(ship => {alert(ship, `Starting...!`, format_time(time+1), "rgba(255,255,255, 0.8)", 1500)});
+          if (instrutor_ended) game.ships.forEach(ship => {alert(ship, format_time(time+1), `Starting...!`, "rgba(255,255,255, 0.8)", 1500)});
         } else {
           time = 0;
           startingGame = 1;
@@ -128,7 +171,7 @@ this.tick = function(game) {
             weapon_drop: collectibles[~~(Math.random() * collectibles.length)]
           });
           const alienn = aliensInfo[nextAlien_Code];
-          game.ships.forEach(ship => {alert(ship, `First Alien!`, `Alien:  ${alienn.name}, difficulty:  ${alienn.difficulty[nextAlien_Level]}`)}); 
+          game.ships.forEach(ship => { alert(ship, `First Alien!`, `Alien:  ${alienn.name}, difficulty:  ${alienn.difficulty[nextAlien_Level]}`) }); 
         }
         break;
       case 1:
@@ -148,15 +191,16 @@ this.tick = function(game) {
         if (time >= 0) {
           time--;
           endScoreboard(game);
-          if (!instrutor_ended) game.ships.forEach(ship => {alert(ship, `Ending...!`, format_time(time+1), "rgba(255,255,255, 0.8)", 1500)});
+          if (!instrutor_ended) game.ships.forEach(ship => {alert(ship, format_time(time+1), `Ending...!`, "rgba(255,255,255, 0.8)", 1500)});
         } else {
           game.ships.forEach(ship => {
+            const info = shipsInformations[ship.custom.oldType];
             ship.gameover({
               "You WON!" : ship.name.toString(),
               "-" : "-",
               "Total Time" : format_time(endGameTimer-1),
-              "Aliens Killed" : ship.custom.kills.toString(),
-              "Score" : ship.score.toString()
+              "Ship Used" : `${info.name}, Tier ${info.tier}`,
+              "Aliens Killed" : ship.custom.kills.toString()
             });
           });
         }
@@ -166,7 +210,7 @@ this.tick = function(game) {
 };
 
 function paChangeMode(code, level) { return ((code == 16 && level == 3) || (code == 20 && level >= 1)) ? "active" : "passive" }
-function getNextAlien() { if (code === wavesInfo[stage].len) stage++, code = 1; else code++; return {code: wavesInfo[stage].codes[code].code, level: wavesInfo[stage].codes[code].level} }
+function getNextAlien() { if (code === wavesInfo[stage].len) stage++, code = 1; else code++; return { code: wavesInfo[stage].codes[code].code, level: wavesInfo[stage].codes[code].level } }
 function isBoss(code, level) { return (code == 20 || code == 19 || code == 15 || code == 12 || (code == 16 && level == 3) || (code == 10 && level == 3)) }
 this.event = function(event, game) {
   switch(event.name) {
@@ -178,7 +222,7 @@ this.event = function(event, game) {
         endGameTimer = time;
         event.killer.set({x: 0, y: 0, vx: 0, vy: 0, collider: false, type: 191, idle: true});
         alert(event.killer, `Finished!`, `Well done Commander!`, "rgba(55,255,55,0.8)");
-        setTimeout(() => {gameFinished(event.killer)},4000);
+        setTimeout(() => { gameFinished(event.killer) },4000);
       } else {
         nextAlien_Code = nextAlien.code;
         nextAlien_Level = nextAlien.level;
@@ -204,7 +248,7 @@ this.event = function(event, game) {
     case "ship_spawned":
       if (!game.custom.Hasjoined) prepareShip(event.ship, game);
       else {
-        if (game.custom.lastlyDied) desactivate(event.ship);
+        if (event.ship == knownPlayers) desactivate(event.ship);
         else expulsed(event.ship);
       }
       break;
@@ -271,7 +315,7 @@ function expulsed(ship) {
     ship.gameover({
       "Create your own game" : ship.name.toString(),
       "Alien SpeedRun" : "Cannot hold more than",
-      "1 players at once" : "-"
+      "1 player at once" : "-"
     });
     game.modding.terminal.echo(`[[bg;tomato;]\n - Restart The Mod - \n]`);
   }, 5000);
@@ -279,20 +323,21 @@ function expulsed(ship) {
 
 function desactivate(ship) {
   alert(ship, `You failed!`, `Be better next time!`, "rgba(255, 55, 55, 0.8)");
+  const info = shipsInformations[ship.type];
   ship.set({x: 0, y: 0, vx: 0, vy: 0, collider: false, type: 191, idle: true});
   setTimeout(() => {
     const alien = aliensInfo[nextAlien_Code];
+    game.modding.terminal.echo(ship.type);
     ship.gameover({
       "You LOST!" : ship.name.toString(),
-      "-" : "-",
       "Killer" : alien.name.toString(),
       "Difficulty" : alien.difficulty[nextAlien_Level].toString(),
       "Stage" : stage.toString(),
       "Time Survived" : format_time(time-1).toString(),
-      "Aliens Killed" : ship.custom.kills.toString(),
-      "Score" : ship.score.toString()
+      "Ship Used" : `${info.name}, Tier ${info.tier}`,
+      "Aliens Killed" : ship.custom.kills.toString()
     });
-    game.modding.terminal.echo(`[[bg;tomato;]\n - Restart The Mod - \n]`);
+    game.modding.terminal.echo(`[[bg;tomato;]\n  - Restart The Mod - \n]`);
   }, 4000);
 }
 
@@ -304,8 +349,9 @@ function blocked() {
     components: [
       {type: "text", position: [0, 4, 100, 8], value: `Game corrupted`, color: "rgb(100,100,255)", align: "center"},
       {type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)"},
-      {type: "text", position: [0, 45, 100, 8], value: `C0.mmun1..c@t1o.ns..`, color: "rgb(255,255,255)", align: "center"},
-      {type: "text", position: [0, 57, 100, 8], value: `S..cr@..m8l.ed.`, color: "rgb(255,255,255)", align: "center"}
+      {type: "text", position: [0, 20, 100, 6], value: `Restart the game`, color: "rgb(255,55,55)", align: "center"},
+      {type: "text", position: [0, 50, 100, 8], value: `C0.mmun1..c@t1o.ns..`, color: "rgb(255,255,255)", align: "center"},
+      {type: "text", position: [0, 62, 100, 8], value: `S..cr@..m8l.ed.`, color: "rgb(255,255,255)", align: "center"}
     ]
   };
   game.ships.forEach(ship => {ship.setUIComponent(Scoreboard)}); 
@@ -380,8 +426,8 @@ function updateScoreboard(game) {
 
 function prepareShip(ship, game,timed = 0) {
   startingGame = true;
-  game.custom.lastlyDied = false;
   game.custom.Hasjoined = true;
+  knownPlayers = ship;
   ship.custom.kills = 0;
   ship.set({x: 0, y: 0});
   ship_instructor(ship, "Welcome to..\n", "Zoltar");
@@ -393,6 +439,7 @@ function prepareShip(ship, game,timed = 0) {
 }
 
 function gameFinished(ship, timed = 0) {
+  ship.custom.oldType = ship.type;
   ship_instructor(ship, "\n\n\n\n\n\n", "Zoltar", 1);
   ship_instructor(ship, `Well done! Commander`, "Zoltar", timed += 2);
   ship_instructor(ship, `You successfuly killed all of the aliens.`, "Zoltar", timed += 5);
@@ -435,7 +482,9 @@ function getCords(size, info, random=true) {
 }
 
 function MapOpen() {
-  game.modding.terminal.echo(`[[bg;#ffdf00;]\n - Alien SpeedRun - ]\n[[ig;#00fff2;]\nVersion: ${mod_version}\nAll credits goes to Megalodon#0001\n]`);
+  game.modding.terminal.echo(`
+  [[bg;#ffdf00;]- Alien SpeedRun -]
+  [[ig;#00fff2;]\nVersion: ${mod_version}\nAll credits goes to Megalodon#0001]\n`);
   game.custom.launched = true;
 }
 
