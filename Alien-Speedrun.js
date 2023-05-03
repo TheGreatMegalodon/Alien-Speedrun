@@ -1,9 +1,15 @@
 const mod_version =
-"2.0.2";
+"2.0.1";
 
 /*
-Mod creator: Megaldoon
-  - Fun small competitive mod for everyone.
+  
+  THIS IS A SOLO MODE.
+  ITS NOT MADE FOR MORE THAN 1 PLAYER TO JOIN.
+  
+  TRYING TO MAKE MORE THAN 1 PLAYER JOIN IS GONNA CAUSE THE MOD TO CRASH OR MALFUNCTION.
+  
+  THNAKS.
+  
 */
 
 const map =
