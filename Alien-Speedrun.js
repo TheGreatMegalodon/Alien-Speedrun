@@ -68,6 +68,7 @@ const wavesInfo = {
 };
 
 const timing = {
+  300: {txt1: `${format_time(300)}`, txt2: `Minutes on the clock`, color: `rgba(155, 255, 55, 0.8)`},
   600: {txt1: `${format_time(600)}`, txt2: `Minutes on the clock!`, color: `rgba(255, 155, 55, 0.8)`},
   1200: {txt1: `${format_time(1200)}`, txt2: `Minutes on the clock.!`, color: `rgba(255, 155, 55, 0.8)`},
   1800: {txt1: `${format_time(1800)}`, txt2: `Minutes on the clock..! Time is running high! too high..`, color: `rgba(255, 55, 55, 0.8)`}
@@ -443,8 +444,8 @@ function gameFinished(ship, timed = 0, tt = 0) {
   ship.custom.oldType = ship.type;
   startingGame = false;
   endGameTimer = time;
-  event.killer.set({ x: 0, y: 0, vx: 0, vy: 0, collider: false, type: 191, idle: true });
-  alert(event.killer, `Finished!`, `Well done Commander!`, "rgba(55,255,55,0.8)");
+  ship.set({ x: 0, y: 0, vx: 0, vy: 0, collider: false, type: 191, idle: true });
+  alert(ship, `Finished!`, `Well done Commander!`, "rgba(55,255,55,0.8)");
   setTimeout(() => { time = 30, startingGame = 2 }, tt += 2000);
   setTimeout(() => {
     ship_instructor(ship, "\n\n\n\n\n\n", "Zoltar", 1);
