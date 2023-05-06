@@ -425,7 +425,7 @@ function updateScoreboard(game) {
       {type: "box", position: [0, 21, 1.5, 10], fill: `rgba(${colorPlayer}, 0.4)`},
       {type: "player", id: ship.id, position: [4, 22, 100, 8], value: "", color: "rgba(255,255,255,0.8)"},
       // Informations
-      {type: "text", position: [0, 36+0.5, 100, 8], value: `Informations`, color: "rgba(255,255,255,0.8)", align: "center"},
+      {type: "text", position: [0, 36+0.5, 100, 8], value: `Information`, color: "rgba(255,255,255,0.8)", align: "center"},
       {type: "box", position: [27.5, 36+8, 45, 0.8], fill: "rgba(155, 155, 155, 0.4)"},
       // Kills
       {type: "box", position: [0, kanch, 1.5, 10], fill: `rgba(255, 255, 255, 0.4)`},
