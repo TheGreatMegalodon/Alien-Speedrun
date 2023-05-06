@@ -3,9 +3,9 @@ const mod_version =
 
 /*
   
-  THIS IS A SOLO MODE.
-  ITS NOT MADE FOR MORE THAN 1 PLAYER TO JOIN.
+  "ASP" IS A SOLO MODE!
   
+  WHICH MEANS IT IS NOT MADE FOR MORE THAN 1 PLAYER TO JOIN.
   TRYING TO MAKE MORE THAN 1 PLAYER JOIN IS GONNA CAUSE THE MOD TO CRASH OR MALFUNCTION.
   
   THNAKS.
@@ -334,7 +334,7 @@ function desactivate(ship) {
       "You LOST!" : ship.name.toString(),
       "Killer" : alien.name.toString(),
       "Difficulty" : alien.difficulty[nextAlien_Level].toString(),
-      "Stage" : stage.toString(),
+      "Stage" : `${stage.toString()}/4`,
       "Time Survived" : format_time(time-1).toString(),
       "Ship Used" : `${info.name}, Tier ${info.tier}`,
       "Aliens Killed" : ship.custom.kills.toString()
@@ -384,7 +384,7 @@ function prepareScoreboard(game) {
     visible: true,
     components: [
       {type: "text", position: [14, 4, 100, 8], value: format_time(time), color: "rgb(255,255,255)", align: "left"},
-      {type: "text", position: [58, 4, 100, 8], value: `Stage:  ${stage}`, color: "rgb(255,255,255)", align: "left"},
+      {type: "text", position: [51, 4, 100, 8], value: `Stage:  ${stage}/4`, color: "rgb(255,255,255)", align: "left"},
       {type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)"},
       {type: "text", position: [0, 52.5, 100, 8], value: dataInitValues[(dataInitIndex++) % dataInitValues.length], color: "rgb(255,255,255)", align: "center"},
     ]
@@ -392,38 +392,71 @@ function prepareScoreboard(game) {
   game.ships.forEach(ship => {ship.setUIComponent(Scoreboard)});
 }
 
+const damagePerLevels = {
+  3: { min: 50, max: 100 },
+  4: { min: 75, max: 125 },
+  5: { min: 100, max: 150 },
+  6: { min: 125, max: 175 },
+  7: { min: 150, max: 200 }
+};
+
 function updateScoreboard(game) {
+  const ship = game.ships[0];
   const alienLB = aliensInfo[nextAlien_Code];
-  const colorStage = (stage === 0) ? "rgb(55, 255, 55)" : (stage === 1) ? "rgb(255, 220, 55)" : (stage === 2) ? "rgb(255, 55, 55)" : (stage === 3) ? "rgb(155, 55, 255)" : (stage >= 4) ? "rgb(55, 200, 255)" : "rgb(255, 255, 255)";
-  const colorInformations = (alienLB.difficulty[nextAlien_Level] == "Easy") ? "rgb(55,255,55)" : (alienLB.difficulty[nextAlien_Level] == "Medium") ? "rgb(255,155,55)" : (alienLB.difficulty[nextAlien_Level] == "Medium") ? "rgb(151,0,0)" : "rgb(255,55,55)";
-  const colorAlien = (alienLB.name == "Caterpillar" || alienLB.name == "Final Boss") ? "rgb(155,55,255)" : "rgb(255,255,255)";
-  const down = 10;
+  const colorStage = (stage === 0) ? "55, 255, 55" : (stage === 1) ? "255, 220, 55" : (stage === 2) ? "255, 55, 55" : (stage === 3) ? "155, 55, 255" : (stage >= 4) ? "55, 200, 255" : "255, 255, 255";
+  const colorInformations = (alienLB.difficulty[nextAlien_Level] == "Easy") ? "55,255,55" : (alienLB.difficulty[nextAlien_Level] == "Medium") ? "255,155,55" : (alienLB.difficulty[nextAlien_Level] == "Medium") ? "151,0,0" : "255,55,55";
+  const colorAlien = (alienLB.name == "Caterpillar" || alienLB.name == "Final Boss") ? "155,55,255" : "255,255,255";
+  const dmg = damagePerLevels[Math.floor(ship.type/100)];
+  const colorPlayer = (ship.shield <= dmg.min) ? "255, 55, 55" : (ship.shield <= dmg.max) ? "255, 155, 55" : (ship.shield >= dmg.max) ? "55, 255, 55" : "255, 255, 255";
+  const kanch = 48+4;
+  const ananch = 60+4;
+  const adanch = 72+4;
+  const anumanch = 84+4;
   let Scoreboard = {
     id: "scoreboard",
     clickable: false,
     visible: true,
     components: [
-      {type: "text", position: [14, 4, 100, 8], value: format_time(time++), color: "rgb(255,255,255)", align: "left"},
-      {type: "text", position: [58, 4, 100, 8], value: `Stage:  ${stage}`, color: colorStage, align: "left"},
+      {type: "text", position: [14, 4, 100, 8], value: format_time(time++), color: "rgba(255,255,255,0.8)", align: "left"},
+      {type: "text", position: [51, 4, 100, 8], value: `Stage:  ${stage}/4`, color: `rgba(${colorStage}, 0.8)`, align: "left"},
       {type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)"},
+      // Ship
+      {type: "box", position: [3, 21, 96, 10], fill: "rgba(155, 155, 155, 0.2)"},
+      {type: "box", position: [0, 21, 1.5, 10], fill: `rgba(${colorPlayer}, 0.4)`},
+      {type: "player", id: ship.id, position: [4, 22, 100, 8], value: "", color: "rgba(255,255,255,0.8)"},
+      // Informations
+      {type: "text", position: [0, 36+0.5, 100, 8], value: `Informations`, color: "rgba(255,255,255,0.8)", align: "center"},
+      {type: "box", position: [27.5, 36+8, 45, 0.8], fill: "rgba(155, 155, 155, 0.4)"},
       // Kills
-      {type: "text", position: [0, 25.5, 100, 8], value: `Aliens Killed:`, color: "rgb(255,255,255)", align: "center"},
-      {type: "box", position: [31, 33, 38, 1], fill: "rgba(155, 155, 155, 0.4)"},
-      {type: "text", position: [0, 35.5, 100, 8], value: game.ships[0].custom.kills, color: "rgb(255,255,255)", align: "center"},
+      {type: "box", position: [0, kanch, 1.5, 10], fill: `rgba(255, 255, 255, 0.4)`},
+      {type: "box", position: [3, kanch, 75, 10], fill: "rgba(155, 155, 155, 0.2)"},
+      {type: "box", position: [79.5, kanch, 19.5, 10], fill: "rgba(155, 155, 155, 0.2)"},
+      {type: "text", position: [20, kanch+1, 100, 8], value: `Aliens Killed`, color: "rgba(255,255,255,0.8)", align: "left"},
+      {type: "text", position: [39.5, kanch+1, 100, 8], value: ship.custom.kills, color: "rgba(255,255,255,0.8)", align: "center"},
       // Alien Name
-      {type: "text", position: [0, 50, 100, 8], value: `Current Alien:`, color: "rgb(255,255,255)", align: "center"},
-      {type: "box", position: [30, 57.5, 40, 1], fill: "rgba(155, 155, 155, 0.4)"},
-      {type: "text", position: [0, 60, 100, 8], value: alienLB.name, color: colorAlien, align: "center"},
+      {type: "box", position: [0, ananch, 1.5, 10], fill: `rgba(${colorAlien}, 0.4)`},
+      {type: "box", position: [3, ananch, 75-20, 10], fill: "rgba(155, 155, 155, 0.2)"},
+      {type: "box", position: [79.5-20, ananch, 19.5+20, 10], fill: "rgba(155, 155, 155, 0.2)"},
+      {type: "text", position: [9.5, ananch+1, 100, 8], value: `Current Alien`, color: "rgba(255,255,255,0.8)", align: "left"},
+      {type: "text", position: [29, ananch+1, 100, 8], value: alienLB.name, color: `rgba(${colorAlien}, 0.8)`, align: "center"},
       // Alien Difficulty
-      {type: "text", position: [0, 75, 100, 8], value: `Alien Difficulty:`, color: "rgb(255,255,255)", align: "center"},
-      {type: "box", position: [27.5, 82.5, 45, 1], fill: "rgba(155, 155, 155, 0.4)"},
-      {type: "text", position: [0, 85, 100, 8], value: alienLB.difficulty[nextAlien_Level], color: colorInformations, align: "center"},
+      {type: "box", position: [0, adanch, 1.5, 10], fill: `rgba(${colorInformations}, 0.4)`},
+      {type: "box", position: [3, adanch, 75-15, 10], fill: "rgba(155, 155, 155, 0.2)"},
+      {type: "box", position: [79.5-15, adanch, 19.5+15, 10], fill: "rgba(155, 155, 155, 0.2)"},
+      {type: "text", position: [9.5, adanch+1, 100, 8], value: `Alien Difficulty`, color: "rgba(255,255,255,0.8)", align: "left"},
+      {type: "text", position: [31.5, adanch+1, 100, 8], value: alienLB.difficulty[nextAlien_Level], color: `rgba(${colorInformations}, 0.8)`, align: "center"},
+      // Asteroid Number
+      {type: "box", position: [0, anumanch, 1.5, 10], fill: `rgba(255, 255, 255, 0.4)`},
+      {type: "box", position: [3, anumanch, 75, 10], fill: "rgba(155, 155, 155, 0.2)"},
+      {type: "box", position: [79.5, anumanch, 19.5, 10], fill: "rgba(155, 155, 155, 0.2)"},
+      {type: "text", position: [12.5, anumanch+1, 100, 8], value: `Moving Asteroids`, color: "rgba(255,255,255,0.8)", align: "left"},
+      {type: "text", position: [39.5, anumanch+1, 100, 8], value: game.asteroids.length, color: "rgba(255,255,255,0.8)", align: "center"},
     ]
   };
-  for (const ship of game.ships) {
-    if (timing.hasOwnProperty(time)) alert(ship, timing[time].txt1, timing[time].txt2, timing[time].color, 4000, {txt1: 75, txt2: 81});
-    ship.setUIComponent(Scoreboard);
-  }
+  game.ships.forEach(shiper => {
+    if (timing.hasOwnProperty(time)) alert(shiper, timing[time].txt1, timing[time].txt2, timing[time].color, 4000, {txt1: 75, txt2: 81});
+    shiper.setUIComponent(Scoreboard);
+  });
 }
 
 function prepareShip(ship, game,timed = 0) {
@@ -462,13 +495,10 @@ function format_time(time) {
   if (time > 0) {
     minutes = Math.floor(time / 60);
     seconds = time % 60;
-    if (time % 60 === 0) {
-      minutes = time / 60;
-      seconds = "00";
-      return minutes.toString() + ":" + seconds;
-    }
-    if (seconds < 10) seconds = "0" + seconds.toString();
-    return minutes.toString() + ":" + seconds.toString();
+    if (time % 60 === 0) return `${(time / 60).toString()}:00`;
+    if (seconds < 10) seconds = `0${seconds.toString()}`;
+    if (minutes < 1) return seconds.toString();
+    return `${minutes.toString()}:${seconds.toString()}`;
   } else return "0:00";
 }
 
@@ -489,9 +519,17 @@ function getCords(size, info, random=true) {
 }
 
 function MapOpen() {
+  const s = "            ";
   game.modding.terminal.echo(`
-  [[bg;#ffdf00;]- Alien SpeedRun -]
-  [[ig;#00fff2;]\nVersion: ${mod_version}\nAll credits goes to Megalodon#0001]\n`);
+  [[bg;#ffdf00;]\n${s}       - Alien SpeedRun -]
+  [[ig;#00fff2;]\n${s}Version: ${mod_version}\n${s}All credits goes to Megalodon#0001]\n
+  [[ig;#ff0000;]
+  "ASP" IS A SOLO MODE!
+  
+  WHICH MEANS IT IS NOT MADE FOR MORE THAN 1 PLAYER TO JOIN.
+  TRYING TO MAKE MORE THAN 1 PLAYER JOIN IS GONNA CAUSE THE MOD TO CRASH OR MALFUNCTION.
+  ]
+  `);
   game.custom.launched = true;
 }
 
