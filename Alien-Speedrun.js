@@ -122,6 +122,16 @@ const shipsInformations = {
   704: { name: "Aries", tier: "7" }
 };
 
+const damagePerLevels = {
+  1: { min: 0, max: 50 },
+  2: { min: 25, max: 75 },
+  3: { min: 50, max: 100 },
+  4: { min: 75, max: 125 },
+  5: { min: 100, max: 150 },
+  6: { min: 125, max: 175 },
+  7: { min: 150, max: 200 }
+};
+
 const ship = [Spectator_191 = '{"name":"Spectator","level":1.9,"model":1,"size":0.025,"zoom":0.075,"specs":{"shield":{"capacity":[1e-30,1e-30],"reload":[1000,1000]},"generator":{"capacity":[1e-30,1e-30],"reload":[1,1]},"ship":{"mass":1,"speed":[200,200],"rotation":[1000,1000],"acceleration":[1000,1000]}},"bodies":{"face":{"section_segments":100,"angle":0,"offset":{"x":0,"y":0,"z":0},"position":{"x":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"y":[-2,-2,2,2],"z":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"width":[0,1,1,0],"height":[0,1,1,0],"vertical":true,"texture":[6]}},"typespec":{"name":"Spectator","level":1,"model":1,"code":101,"specs":{"shield":{"capacity":[1e-30,1e-30],"reload":[1000,1000]},"generator":{"capacity":[1e-30,1e-30],"reload":[1,1]},"ship":{"mass":1,"speed":[200,200],"rotation":[1000,1000],"acceleration":[1000,1000]}},"shape":[0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001],"lasers":[],"radius":0.001}}'];
 const music = ["civilisation.mp3", "procedurality.mp3", "argon.mp3", "crystals.mp3", "red_mist.mp3", "warp_drive.mp3"];
 const musicApplyed = music[~~(Math.random() * music.length)];
@@ -465,19 +475,9 @@ function updateScoreboard(game) {
   });
 }
 
-const damagePerLevels = {
-  1: { min: 0, max: 50 },
-  2: { min: 25, max: 75 },
-  3: { min: 50, max: 100 },
-  4: { min: 75, max: 125 },
-  5: { min: 100, max: 150 },
-  6: { min: 125, max: 175 },
-  7: { min: 150, max: 200 }
-};
-
 function shipColor(ship) {
   const dmg = damagePerLevels[Math.floor(ship.type/100)];
-  return (ship.shield <= dmg.min) ? "255, 55, 55" : (ship.shield <= dmg.max) ? "255, 155, 55" : (ship.shield >= dmg.max) ? "55, 255, 55" : "255, 255, 255";
+  return (ship.shield <= 5) ? "55, 55, 55" : (ship.shield <= dmg.min) ? "255, 55, 55" : (ship.shield <= dmg.max) ? "255, 155, 55" : (ship.shield >= dmg.max) ? "55, 255, 55" : "255, 255, 255";
 }
 
 function prepareShip(ship, game,timed = 0) {
