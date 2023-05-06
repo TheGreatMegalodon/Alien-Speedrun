@@ -349,27 +349,35 @@ function blocked() {
     clickable: false,
     visible: true,
     components: [
-      {type: "text", position: [0, 4, 100, 8], value: `Game corrupted`, color: "rgb(100,100,255)", align: "center"},
-      {type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)"},
-      {type: "text", position: [0, 20, 100, 6], value: `Restart the game`, color: "rgb(255,55,55)", align: "center"},
-      {type: "text", position: [0, 50, 100, 8], value: `C0.mmun1..c@t1o.ns..`, color: "rgb(255,255,255)", align: "center"},
-      {type: "text", position: [0, 62, 100, 8], value: `S..cr@..m8l.ed.`, color: "rgb(255,255,255)", align: "center"}
+      { type: "text", position: [0, 4, 100, 8], value: `Game corrupted`, color: "rgb(100,100,255)", align: "center" },
+      { type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)" },
+      { type: "text", position: [0, 20, 100, 6], value: `Restart the game`, color: "rgb(255,55,55)", align: "center" },
+      //txt
+      { type: "text", position: [0, 50, 100, 8], value: `C0.mmun1..c@t1o.ns..`, color: "rgb(255,255,255)", align: "center" },
+      { type: "text", position: [0, 62, 100, 8], value: `S..cr@..m8l.ed.`, color: "rgb(255,255,255)", align: "center" }
     ]
   };
   game.ships.forEach(ship => {ship.setUIComponent(Scoreboard)}); 
 }
 
 function endScoreboard(game) {
+  const ship = game.ships[0];
+  const colorPlayer = shipColor(ship);
   let Scoreboard = {
     id: "scoreboard",
     clickable: false,
     visible: true,
     components: [
-      {type: "text", position: [14, 4, 100, 8], value: `Game is ending`, color: "rgb(255,255,255)", align: "left"},
-      {type: "text", position: [72, 4, 100, 8], value: format_time(time), color: "rgb(255,255,255)", align: "left"},
-      {type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)"},
-      {type: "text", position: [0, 45, 100, 8], value: `Communications`, color: "rgb(255,255,255)", align: "center"},
-      {type: "text", position: [0, 57, 100, 8], value: `Over`, color: "rgb(255,255,255)", align: "center"}
+      { type: "text", position: [14, 4, 100, 8], value: `Game is ending`, color: "rgb(255,255,255)", align: "left" },
+      { type: "text", position: [32, 4, 100, 8], value: format_time(time), color: "rgb(255,255,255)", align: "center" },
+      { type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)" },
+      // Ship
+      { type: "box", position: [0, 21, 1.5, 12], fill: `rgba(${colorPlayer}, 0.4)` },
+      { type: "box", position: [3, 21, 96, 12], fill: "rgba(155, 155, 155, 0.1)" },
+      { type: "player", id: ship.id, position: [4, 22.5, 100, 9], value: "", color: "rgba(255,255,255,0.8)" },
+      // txt
+      { type: "text", position: [0, 57, 100, 8], value: `Communications`, color: "rgb(255,255,255)", align: "center" },
+      { type: "text", position: [0, 67, 100, 8], value: `Over`, color: "rgb(255,255,255)", align: "center" }
     ]
   };
   game.ships.forEach(ship => {ship.setUIComponent(Scoreboard)});
@@ -378,27 +386,26 @@ function endScoreboard(game) {
 let dataInitIndex = 0;
 const dataInitValues = ["Initializing Data!", "Initializing Data.!", "Initializing Data..!", "Initializing Data...!"];
 function prepareScoreboard(game) {
+  const ship = game.ships[0];
+  const colorPlayer = shipColor(ship);
   let Scoreboard = {
     id: "scoreboard",
     clickable: false,
     visible: true,
     components: [
-      {type: "text", position: [14, 4, 100, 8], value: format_time(time), color: "rgb(255,255,255)", align: "left"},
-      {type: "text", position: [51, 4, 100, 8], value: `Stage:  ${stage}/4`, color: "rgb(255,255,255)", align: "left"},
-      {type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)"},
-      {type: "text", position: [0, 52.5, 100, 8], value: dataInitValues[(dataInitIndex++) % dataInitValues.length], color: "rgb(255,255,255)", align: "center"},
+      { type: "text", position: [14, 4, 100, 8], value: format_time(time), color: "rgb(255,255,255)", align: "left" },
+      { type: "text", position: [52, 4, 100, 8], value: `Stage  ${stage}/4`, color: "rgb(255,255,255)", align: "left" },
+      { type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)" },
+      // Ship
+      { type: "box", position: [0, 21, 1.5, 12], fill: `rgba(${colorPlayer}, 0.4)` },
+      { type: "box", position: [3, 21, 96, 12], fill: "rgba(155, 155, 155, 0.1)" },
+      { type: "player", id: ship.id, position: [4, 22.5, 100, 9], value: "", color: "rgba(255,255,255,0.8)" },
+      // txt
+      { type: "text", position: [0, 60, 100, 8], value: dataInitValues[(dataInitIndex++) % dataInitValues.length], color: "rgb(255,255,255)", align: "center" }
     ]
   };
   game.ships.forEach(ship => {ship.setUIComponent(Scoreboard)});
 }
-
-const damagePerLevels = {
-  3: { min: 50, max: 100 },
-  4: { min: 75, max: 125 },
-  5: { min: 100, max: 150 },
-  6: { min: 125, max: 175 },
-  7: { min: 150, max: 200 }
-};
 
 function updateScoreboard(game) {
   const ship = game.ships[0];
@@ -406,57 +413,71 @@ function updateScoreboard(game) {
   const colorStage = (stage === 0) ? "55, 255, 55" : (stage === 1) ? "255, 220, 55" : (stage === 2) ? "255, 55, 55" : (stage === 3) ? "155, 55, 255" : (stage >= 4) ? "55, 200, 255" : "255, 255, 255";
   const colorInformations = (alienLB.difficulty[nextAlien_Level] == "Easy") ? "55,255,55" : (alienLB.difficulty[nextAlien_Level] == "Medium") ? "255,155,55" : (alienLB.difficulty[nextAlien_Level] == "Medium") ? "151,0,0" : "255,55,55";
   const colorAlien = (alienLB.name == "Caterpillar" || alienLB.name == "Final Boss") ? "155,55,255" : "255,255,255";
-  const dmg = damagePerLevels[Math.floor(ship.type/100)];
-  const colorPlayer = (ship.shield <= dmg.min) ? "255, 55, 55" : (ship.shield <= dmg.max) ? "255, 155, 55" : (ship.shield >= dmg.max) ? "55, 255, 55" : "255, 255, 255";
-  const kanch = 48+4;
-  const ananch = 60+4;
-  const adanch = 72+4;
-  const anumanch = 84+4;
+  const colorPlayer = shipColor(ship);
+  const kanch = 53;
+  const ananch = 65;
+  const adanch = 77;
+  const anumanch = 89;
   let Scoreboard = {
     id: "scoreboard",
     clickable: false,
     visible: true,
     components: [
-      {type: "text", position: [14, 4, 100, 8], value: format_time(time++), color: "rgba(255,255,255,0.8)", align: "left"},
-      {type: "text", position: [51, 4, 100, 8], value: `Stage:  ${stage}/4`, color: `rgba(${colorStage}, 0.8)`, align: "left"},
-      {type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)"},
+      { type: "text", position: [14, 4, 100, 8], value: format_time(time++), color: "rgba(255,255,255,0.8)", align: "left" },
+      { type: "text", position: [52, 4, 100, 8], value: `Stage  ${stage}/4`, color: `rgba(${colorStage}, 0.8)`, align: "left" },
+      { type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)" },
       // Ship
-      {type: "box", position: [3, 21, 96, 10], fill: "rgba(155, 155, 155, 0.2)"},
-      {type: "box", position: [0, 21, 1.5, 10], fill: `rgba(${colorPlayer}, 0.4)`},
-      {type: "player", id: ship.id, position: [4, 22, 100, 8], value: "", color: "rgba(255,255,255,0.8)"},
+      { type: "box", position: [0, 21, 1.5, 12], fill: `rgba(${colorPlayer}, 0.4)` },
+      { type: "box", position: [3, 21, 96, 12], fill: "rgba(155, 155, 155, 0.1)" },
+      { type: "player", id: ship.id, position: [4, 22.5, 100, 9], value: "", color: "rgba(255,255,255,0.8)" },
       // Informations
-      {type: "text", position: [0, 36+0.5, 100, 8], value: `Information`, color: "rgba(255,255,255,0.8)", align: "center"},
-      {type: "box", position: [27.5, 36+8, 45, 0.8], fill: "rgba(155, 155, 155, 0.4)"},
+      { type: "text", position: [0, 37.5, 100, 8], value: `Game Information`, color: "rgba(255,255,255,0.8)", align: "center" },
+      { type: "box", position: [22.5, 45, 55, 0.8], fill: "rgba(155, 155, 155, 0.4)" },
       // Kills
-      {type: "box", position: [0, kanch, 1.5, 10], fill: `rgba(255, 255, 255, 0.4)`},
-      {type: "box", position: [3, kanch, 75, 10], fill: "rgba(155, 155, 155, 0.2)"},
-      {type: "box", position: [79.5, kanch, 19.5, 10], fill: "rgba(155, 155, 155, 0.2)"},
-      {type: "text", position: [20, kanch+1, 100, 8], value: `Aliens Killed`, color: "rgba(255,255,255,0.8)", align: "left"},
-      {type: "text", position: [39.5, kanch+1, 100, 8], value: ship.custom.kills, color: "rgba(255,255,255,0.8)", align: "center"},
+      { type: "box", position: [0, kanch, 1.5, 10], fill: `rgba(255, 255, 255, 0.4)` },
+      { type: "box", position: [3, kanch, 75, 10], fill: "rgba(155, 155, 155, 0.1)" },
+      { type: "box", position: [79.5, kanch, 19.5, 10], fill: "rgba(155, 155, 155, 0.2)" },
+      { type: "text", position: [20, kanch+1, 100, 8], value: `Aliens Killed`, color: "rgba(255,255,255,0.8)", align: "left" },
+      { type: "text", position: [39.5, kanch+1, 100, 8], value: ship.custom.kills, color: "rgba(255,255,255,0.8)", align: "center" },
       // Alien Name
-      {type: "box", position: [0, ananch, 1.5, 10], fill: `rgba(${colorAlien}, 0.4)`},
-      {type: "box", position: [3, ananch, 75-20, 10], fill: "rgba(155, 155, 155, 0.2)"},
-      {type: "box", position: [79.5-20, ananch, 19.5+20, 10], fill: "rgba(155, 155, 155, 0.2)"},
-      {type: "text", position: [9.5, ananch+1, 100, 8], value: `Current Alien`, color: "rgba(255,255,255,0.8)", align: "left"},
-      {type: "text", position: [29, ananch+1, 100, 8], value: alienLB.name, color: `rgba(${colorAlien}, 0.8)`, align: "center"},
+      { type: "box", position: [0, ananch, 1.5, 10], fill: `rgba(${colorAlien}, 0.4)` },
+      { type: "box", position: [3, ananch, 75-20, 10], fill: "rgba(155, 155, 155, 0.1)" },
+      { type: "box", position: [79.5-20, ananch, 19.5+20, 10], fill: "rgba(155, 155, 155, 0.2)" },
+      { type: "text", position: [9.5, ananch+1, 100, 8], value: `Current Alien`, color: "rgba(255,255,255,0.8)", align: "left" },
+      { type: "text", position: [29, ananch+1, 100, 8], value: alienLB.name, color: `rgba(${colorAlien}, 0.8)`, align: "center" },
       // Alien Difficulty
-      {type: "box", position: [0, adanch, 1.5, 10], fill: `rgba(${colorInformations}, 0.4)`},
-      {type: "box", position: [3, adanch, 75-15, 10], fill: "rgba(155, 155, 155, 0.2)"},
-      {type: "box", position: [79.5-15, adanch, 19.5+15, 10], fill: "rgba(155, 155, 155, 0.2)"},
-      {type: "text", position: [9.5, adanch+1, 100, 8], value: `Alien Difficulty`, color: "rgba(255,255,255,0.8)", align: "left"},
-      {type: "text", position: [31.5, adanch+1, 100, 8], value: alienLB.difficulty[nextAlien_Level], color: `rgba(${colorInformations}, 0.8)`, align: "center"},
+      { type: "box", position: [0, adanch, 1.5, 10], fill: `rgba(${colorInformations}, 0.4)` },
+      { type: "box", position: [3, adanch, 75-15, 10], fill: "rgba(155, 155, 155, 0.1)" },
+      { type: "box", position: [79.5-15, adanch, 19.5+15, 10], fill: "rgba(155, 155, 155, 0.2)" },
+      { type: "text", position: [9.5, adanch+1, 100, 8], value: `Alien Difficulty`, color: "rgba(255,255,255,0.8)", align: "left" },
+      { type: "text", position: [31.5, adanch+1, 100, 8], value: alienLB.difficulty[nextAlien_Level], color: `rgba(${colorInformations}, 0.8)`, align: "center" },
       // Asteroid Number
-      {type: "box", position: [0, anumanch, 1.5, 10], fill: `rgba(255, 255, 255, 0.4)`},
-      {type: "box", position: [3, anumanch, 75, 10], fill: "rgba(155, 155, 155, 0.2)"},
-      {type: "box", position: [79.5, anumanch, 19.5, 10], fill: "rgba(155, 155, 155, 0.2)"},
-      {type: "text", position: [12.5, anumanch+1, 100, 8], value: `Moving Asteroids`, color: "rgba(255,255,255,0.8)", align: "left"},
-      {type: "text", position: [39.5, anumanch+1, 100, 8], value: game.asteroids.length, color: "rgba(255,255,255,0.8)", align: "center"},
+      { type: "box", position: [0, anumanch, 1.5, 10], fill: `rgba(255, 255, 255, 0.4)` },
+      { type: "box", position: [3, anumanch, 75, 10], fill: "rgba(155, 155, 155, 0.1)" },
+      { type: "box", position: [79.5, anumanch, 19.5, 10], fill: "rgba(155, 155, 155, 0.2)" },
+      { type: "text", position: [12.5, anumanch+1, 100, 8], value: `Moving Asteroids`, color: "rgba(255,255,255,0.8)", align: "left" },
+      { type: "text", position: [39.5, anumanch+1, 100, 8], value: game.asteroids.length, color: "rgba(255,255,255,0.8)", align: "center" }
     ]
   };
   game.ships.forEach(shiper => {
-    if (timing.hasOwnProperty(time)) alert(shiper, timing[time].txt1, timing[time].txt2, timing[time].color, 4000, {txt1: 75, txt2: 81});
+    if (timing.hasOwnProperty(time)) alert(shiper, timing[time].txt1, timing[time].txt2, timing[time].color, 4000, { txt1: 75, txt2: 81 });
     shiper.setUIComponent(Scoreboard);
   });
+}
+
+const damagePerLevels = {
+  1: { min: 0, max: 50 },
+  2: { min: 25, max: 75 },
+  3: { min: 50, max: 100 },
+  4: { min: 75, max: 125 },
+  5: { min: 100, max: 150 },
+  6: { min: 125, max: 175 },
+  7: { min: 150, max: 200 }
+};
+
+function shipColor(ship) {
+  const dmg = damagePerLevels[Math.floor(ship.type/100)];
+  return (ship.shield <= dmg.min) ? "255, 55, 55" : (ship.shield <= dmg.max) ? "255, 155, 55" : (ship.shield >= dmg.max) ? "55, 255, 55" : "255, 255, 255";
 }
 
 function prepareShip(ship, game,timed = 0) {
@@ -521,14 +542,13 @@ function getCords(size, info, random=true) {
 function MapOpen() {
   const s = "            ";
   game.modding.terminal.echo(`
-  [[bg;#ffdf00;]\n${s}       - Alien SpeedRun -]
+  [[bg;#ffdf00;]${s}       - Alien SpeedRun - ]
   [[ig;#00fff2;]\n${s}Version: ${mod_version}\n${s}All credits goes to Megalodon#0001]\n
   [[ig;#ff0000;]
   "ASP" IS A SOLO MODE!
   
   WHICH MEANS IT IS NOT MADE FOR MORE THAN 1 PLAYER TO JOIN.
-  TRYING TO MAKE MORE THAN 1 PLAYER JOIN IS GONNA CAUSE THE MOD TO CRASH OR MALFUNCTION.
-  ]
+  TRYING TO MAKE MORE THAN 1 PLAYER JOIN IS GONNA CAUSE THE MOD TO CRASH OR MALFUNCTION.]
   `);
   game.custom.launched = true;
 }
