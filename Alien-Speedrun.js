@@ -55,7 +55,7 @@ const aliensInfo = {
   19: { name: "Saucer", difficulty: { 0: "Medium", 1: "Medium", 2:  "Hard", 3:  "Hard" } },
   20: { name: "Final Boss", difficulty: { 0: "Hard", 1: "Hard", 2: "Hard", 3: "Hard" } },
   // troll
-  13: { name: "Caterpillar", difficulty: { 0:  "Medium", 1:  "Hard", 2: "Extremly Hard" } },
+  13: { name: "Caterpillar", difficulty: { 0:  "Medium", 1:  "Hard", 2: "Extreme" } },
 };
 
 const wavesInfo = {
@@ -75,7 +75,7 @@ const timing = {
 };
 
 const intraWaves = {
-  "active": { velocityMultiplier: 3, sizeReducer: 2, spawnFrequency: 0.5, spawnLimit: 20 },
+  "active": { velocityMultiplier: 3, sizeReducer: 1.2, spawnFrequency: 0.5, spawnLimit: 20 },
   "passive": { velocityMultiplier: 1, sizeReducer: 1, spawnFrequency: 4, spawnLimit: 4 }
 };
 
@@ -140,7 +140,7 @@ this.options = {
   root_mode: "",
   map_name: "Alien Speedrun",
   map_size: 20,
-  max_players: 1,
+  max_players: 2,
   crystal_value: 2.5,
   starting_ship: 801,
   starting_ship_maxed: true,
@@ -166,12 +166,9 @@ var collectibles = [10, 11, 20, 21, 41, 42, 90, 91];
 var asteroid_positions = getCords(100,  {cords: 100}, false);
 var asteroid_sizes = setVariables({order: 3, len: 10, gap: 2});
 var asteroid_velocity = getCords(6,  {cords: 0}, false).map(pos => pos/12.5).filter(pos => pos !== 0);
-function blink(passiveColor) {if (blinkColor == passiveColor) blinkColor = "rgb(55,55,55)"; else blinkColor = passiveColor; return blinkColor}
 this.tick = function(game) {
   if (game.step % 60 === 0) {
-    if (game.ships.length > 1) startingGame = -1;
     switch(startingGame) {
-      case -1: colorBLK = blink("rgb(100,100,255)"), blocked(), game.ships.forEach(ship => { alert(ship, `More than 2 players detected`, `Please restart the mod in order to continue playing`, colorBLK, 8000) }); break;
       case true:
         if (time >= 0) {
           time--;
@@ -260,10 +257,7 @@ this.event = function(event, game) {
       break;
     case "ship_spawned":
       if (!game.custom.Hasjoined) prepareShip(event.ship, game);
-      else {
-        if (event.ship == knownPlayers) desactivate(event.ship);
-        else expulsed(event.ship);
-      }
+      else (event.ship === knownPlayers) ? desactivate(event.ship) : expulsed();
       break;
     case "asteroid_destroyed":
       if (event.killer) {
@@ -321,55 +315,6 @@ var ship_instructor = function(ship, message, character = "Lucina", delay = 0, h
   setTimeout(instructor_func, delay * 650);
 };
 
-function expulsed(ship) {
-  alert(ship, `This game is full`, `host one yourself!`, "rgba(255, 55, 55, 0.8)");
-  ship.set({x: 0, y: 0, vx: 0, vy: 0, collider: false, type: 191, idle: true});
-  setTimeout(() => {
-    ship.gameover({
-      "Create your own game" : ship.name.toString(),
-      "Alien SpeedRun" : "Cannot hold more than",
-      "1 player at once" : "-"
-    });
-    game.modding.terminal.echo(`[[bg;tomato;]\n - Restart The Mod - \n]`);
-  }, 5000);
-}
-
-function desactivate(ship) {
-  alert(ship, `You failed!`, `Be better next time!`, "rgba(255, 55, 55, 0.8)");
-  const info = (shipsInformations.hasOwnProperty(ship.type)) ? shipsInformations[ship.type] : shipsInformations.default;
-  ship.set({x: 0, y: 0, vx: 0, vy: 0, collider: false, type: 191, idle: true});
-  setTimeout(() => {
-    const alien = aliensInfo[nextAlien_Code];
-    ship.gameover({
-      "You LOST!" : ship.name.toString(),
-      "Killer" : alien.name.toString(),
-      "Difficulty" : alien.difficulty[nextAlien_Level].toString(),
-      "Stage" : `${stage.toString()}/4`,
-      "Time Survived" : format_time(time-1).toString(),
-      "Ship Used" : `${info.name}, Tier ${info.tier}`,
-      "Aliens Killed" : ship.custom.kills.toString()
-    });
-    game.modding.terminal.echo(`[[bg;tomato;]\n  - Restart The Mod - \n]`);
-  }, 4000);
-}
-
-function blocked() {
-  let Scoreboard = {
-    id: "scoreboard",
-    clickable: false,
-    visible: true,
-    components: [
-      { type: "text", position: [0, 4, 100, 8], value: `Game corrupted`, color: "rgb(100,100,255)", align: "center" },
-      { type: "box", position: [10, 15, 80, 1.4], fill: "rgba(155, 155, 155, 0.4)" },
-      { type: "text", position: [0, 20, 100, 6], value: `Restart the game`, color: "rgb(255,55,55)", align: "center" },
-      //txt
-      { type: "text", position: [0, 50, 100, 8], value: `C0.mmun1..c@t1o.ns..`, color: "rgb(255,255,255)", align: "center" },
-      { type: "text", position: [0, 62, 100, 8], value: `S..cr@..m8l.ed.`, color: "rgb(255,255,255)", align: "center" }
-    ]
-  };
-  game.ships.forEach(ship => {ship.setUIComponent(Scoreboard)}); 
-}
-
 function endScoreboard(game) {
   const ship = game.ships[0];
   const colorPlayer = shipColor(ship);
@@ -424,10 +369,6 @@ function updateScoreboard(game) {
   const colorInformations = (alienLB.difficulty[nextAlien_Level] == "Easy") ? "55,255,55" : (alienLB.difficulty[nextAlien_Level] == "Medium") ? "255,155,55" : (alienLB.difficulty[nextAlien_Level] == "Medium") ? "151,0,0" : "255,55,55";
   const colorAlien = (alienLB.name == "Caterpillar" || alienLB.name == "Final Boss") ? "155,55,255" : "255,255,255";
   const colorPlayer = shipColor(ship);
-  const kanch = 53;
-  const ananch = 65;
-  const adanch = 77;
-  const anumanch = 89;
   let Scoreboard = {
     id: "scoreboard",
     clickable: false,
@@ -444,33 +385,33 @@ function updateScoreboard(game) {
       { type: "text", position: [0, 37.5, 100, 8], value: `Game Information`, color: "rgba(255,255,255,0.8)", align: "center" },
       { type: "box", position: [22.5, 45, 55, 0.8], fill: "rgba(155, 155, 155, 0.4)" },
       // Kills
-      { type: "box", position: [0, kanch, 1.5, 10], fill: `rgba(255, 255, 255, 0.4)` },
-      { type: "box", position: [3, kanch, 75, 10], fill: "rgba(155, 155, 155, 0.1)" },
-      { type: "box", position: [79.5, kanch, 19.5, 10], fill: "rgba(155, 155, 155, 0.2)" },
-      { type: "text", position: [20, kanch+1, 100, 8], value: `Aliens Killed`, color: "rgba(255,255,255,0.8)", align: "left" },
-      { type: "text", position: [39.5, kanch+1, 100, 8], value: ship.custom.kills, color: "rgba(255,255,255,0.8)", align: "center" },
+      { type: "box", position: [0, 53, 1.5, 10], fill: `rgba(255, 255, 255, 0.4)` },
+      { type: "box", position: [3, 53, 75, 10], fill: "rgba(155, 155, 155, 0.1)" },
+      { type: "box", position: [79.5, 53, 19.5, 10], fill: "rgba(155, 155, 155, 0.2)" },
+      { type: "text", position: [20, 54, 100, 8], value: `Aliens Killed`, color: "rgba(255,255,255,0.8)", align: "left" },
+      { type: "text", position: [39.5, 54, 100, 8], value: ship.custom.kills, color: "rgba(255,255,255,0.8)", align: "center" },
       // Alien Name
-      { type: "box", position: [0, ananch, 1.5, 10], fill: `rgba(${colorAlien}, 0.4)` },
-      { type: "box", position: [3, ananch, 75-20, 10], fill: "rgba(155, 155, 155, 0.1)" },
-      { type: "box", position: [79.5-20, ananch, 19.5+20, 10], fill: "rgba(155, 155, 155, 0.2)" },
-      { type: "text", position: [9.5, ananch+1, 100, 8], value: `Current Alien`, color: "rgba(255,255,255,0.8)", align: "left" },
-      { type: "text", position: [29, ananch+1, 100, 8], value: alienLB.name, color: `rgba(${colorAlien}, 0.8)`, align: "center" },
+      { type: "box", position: [0, 65, 1.5, 10], fill: `rgba(${colorAlien}, 0.4)` },
+      { type: "box", position: [3, 65, 75-20, 10], fill: "rgba(155, 155, 155, 0.1)" },
+      { type: "box", position: [79.5-20, 65, 19.5+20, 10], fill: "rgba(155, 155, 155, 0.2)" },
+      { type: "text", position: [9.5, 66, 100, 8], value: `Current Alien`, color: "rgba(255,255,255,0.8)", align: "left" },
+      { type: "text", position: [29, 66, 100, 8], value: alienLB.name, color: `rgba(${colorAlien}, 0.8)`, align: "center" },
       // Alien Difficulty
-      { type: "box", position: [0, adanch, 1.5, 10], fill: `rgba(${colorInformations}, 0.4)` },
-      { type: "box", position: [3, adanch, 75-15, 10], fill: "rgba(155, 155, 155, 0.1)" },
-      { type: "box", position: [79.5-15, adanch, 19.5+15, 10], fill: "rgba(155, 155, 155, 0.2)" },
-      { type: "text", position: [9.5, adanch+1, 100, 8], value: `Alien Difficulty`, color: "rgba(255,255,255,0.8)", align: "left" },
-      { type: "text", position: [31.5, adanch+1, 100, 8], value: alienLB.difficulty[nextAlien_Level], color: `rgba(${colorInformations}, 0.8)`, align: "center" },
+      { type: "box", position: [0, 77, 1.5, 10], fill: `rgba(${colorInformations}, 0.4)` },
+      { type: "box", position: [3, 77, 75-15, 10], fill: "rgba(155, 155, 155, 0.1)" },
+      { type: "box", position: [79.5-15, 77, 19.5+15, 10], fill: "rgba(155, 155, 155, 0.2)" },
+      { type: "text", position: [9.5, 78, 100, 8], value: `Alien Difficulty`, color: "rgba(255,255,255,0.8)", align: "left" },
+      { type: "text", position: [31.5, 78, 100, 8], value: alienLB.difficulty[nextAlien_Level], color: `rgba(${colorInformations}, 0.8)`, align: "center" },
       // Asteroid Number
-      { type: "box", position: [0, anumanch, 1.5, 10], fill: `rgba(255, 255, 255, 0.4)` },
-      { type: "box", position: [3, anumanch, 75, 10], fill: "rgba(155, 155, 155, 0.1)" },
-      { type: "box", position: [79.5, anumanch, 19.5, 10], fill: "rgba(155, 155, 155, 0.2)" },
-      { type: "text", position: [12.5, anumanch+1, 100, 8], value: `Moving Asteroids`, color: "rgba(255,255,255,0.8)", align: "left" },
-      { type: "text", position: [39.5, anumanch+1, 100, 8], value: game.asteroids.length, color: "rgba(255,255,255,0.8)", align: "center" }
+      { type: "box", position: [0, 89, 1.5, 10], fill: `rgba(255, 255, 255, 0.4)` },
+      { type: "box", position: [3, 89, 75, 10], fill: "rgba(155, 155, 155, 0.1)" },
+      { type: "box", position: [79.5, 89, 19.5, 10], fill: "rgba(155, 155, 155, 0.2)" },
+      { type: "text", position: [12.5, 90, 100, 8], value: `Moving Asteroids`, color: "rgba(255,255,255,0.8)", align: "left" },
+      { type: "text", position: [39.5, 90, 100, 8], value: game.asteroids.length, color: "rgba(255,255,255,0.8)", align: "center" }
     ]
   };
   game.ships.forEach(shiper => {
-    if (timing.hasOwnProperty(time)) alert(shiper, timing[time].txt1, timing[time].txt2, timing[time].color, 4000, { txt1: 75, txt2: 81 });
+    if (timing.hasOwnProperty(time+1)) alert(shiper, timing[time].txt1, timing[time].txt2, timing[time].color, 4000, { txt1: 75, txt2: 81 });
     shiper.setUIComponent(Scoreboard);
   });
 }
@@ -484,7 +425,7 @@ function prepareShip(ship, game,timed = 0) {
   game.custom.Hasjoined = true;
   knownPlayers = ship;
   ship.custom.kills = 0;
-  ship.set({x: 0, y: 0});
+  ship.set({x: 0, y: 0, invincible: 1000});
   ship_instructor(ship, "Welcome to..\n", "Zoltar");
   ship_instructor(ship, "Alien Speedrun!\n", "Zoltar", timed += 3);
   ship_instructor(ship, "To win the game, you must kill all the aliens as quickly as possible without dying once..", "Zoltar", timed += 3);
@@ -492,6 +433,40 @@ function prepareShip(ship, game,timed = 0) {
   ship_instructor(ship, "Complete them as quickly as possible and maybe become the new record holder!", "Zoltar", timed += 8);
   ship_instructor(ship, "\nGood luck Commander!", "Zoltar", timed += 8, 4);
   startingGame = true;
+}
+
+function expulsed() {
+  game.ships.forEach(ship => {
+    alert(ship, `More than 2 players detected`, `Please restart the mod in order to continue playing`, "rgba(255, 55, 55, 0.8)", 8000);
+    ship.set({x: 0, y: 0, vx: 0, vy: 0, collider: false, type: 191, idle: true});
+    setTimeout(() => {
+      ship.gameover({
+        "Create your own game" : ship.name.toString(),
+        "Alien SpeedRun" : "Cannot hold more than",
+        "1 player at once" : "-"
+      });
+    }, 5000);
+  });
+  game.modding.terminal.echo(`[[bg;tomato;]\n - Restart The Mod - \n]`);
+}
+
+function desactivate(ship) {
+  alert(ship, `You failed!`, `Be better next time!`, "rgba(255, 55, 55, 0.8)");
+  const info = (shipsInformations.hasOwnProperty(ship.type)) ? shipsInformations[ship.type] : shipsInformations.default;
+  ship.set({x: 0, y: 0, vx: 0, vy: 0, collider: false, type: 191, idle: true});
+  setTimeout(() => {
+    const alien = aliensInfo[nextAlien_Code];
+    ship.gameover({
+      "You LOST!" : ship.name.toString(),
+      "Killer" : alien.name.toString(),
+      "Difficulty" : alien.difficulty[nextAlien_Level].toString(),
+      "Stage" : `${stage.toString()}/4`,
+      "Time Survived" : format_time(time-1).toString(),
+      "Ship Used" : `${info.name}, Tier ${info.tier}`,
+      "Aliens Killed" : ship.custom.kills.toString()
+    });
+    game.modding.terminal.echo(`[[bg;tomato;]\n  - Restart The Mod - \n]`);
+  }, 4000);
 }
 
 function gameFinished(ship, timed = 0, tt = 0) {
