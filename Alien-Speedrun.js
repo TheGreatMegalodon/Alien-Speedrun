@@ -4,7 +4,7 @@ const informations = {
   creator: "Megalodon#0001",
   warning: 
     `
-    AS P (Alien SpeedRun) IS A SOLO MODE!
+    ASP (Alien SpeedRun) IS A SOLO MODE!
     
     WHICH MEANS IT IS NOT MADE FOR MORE THAN 1 PLAYER TO JOIN.
     TRYING TO MAKE MORE THAN 1 PLAYER JOIN IS GONNA CAUSE THE MOD TO CRASH OR MALFUNCTION.
