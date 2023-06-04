@@ -11,4 +11,4 @@
 * Megalodon
 
 ### Mod Version
-* [Main code 2.0.4](https://github.com/TheGreatMegalodon/Alien-Speedrun/blob/main/Alien-Speedrun.js)
+* [Main code 2.1.0](https://github.com/TheGreatMegalodon/Alien-Speedrun/blob/main/Alien-Speedrun.js)
