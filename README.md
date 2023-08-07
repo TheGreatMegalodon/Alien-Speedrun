@@ -2,7 +2,7 @@
 
 > ⚠️ Any bugs or issues?
 
-> Contact me on discord: Megalodon#0001
+> Contact me on discord: .megalodon
 
 ### Goal
 * Kill every aliens form the chicken to the final boss as fast as possible and without dying once!
